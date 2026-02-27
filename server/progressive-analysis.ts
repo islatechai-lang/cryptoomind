@@ -278,7 +278,7 @@ export async function generateProgressivePrediction(
 
     // STAGE 7: AI Strategic Insights (Gemini 3 Pro)
     sendStageUpdate(ws, "ai_thinking", 0, "in_progress", {
-      message: "Gemini 3 Pro analyzing market conditions..."
+      message: "Gemini 3.1 Pro analyzing market conditions..."
     });
     await delay(1000);
 
@@ -333,7 +333,7 @@ export async function generateProgressivePrediction(
         pair,
         direction: geminiDecision.direction,
         confidence: geminiDecision.confidence,
-        duration: geminiDecision.duration,
+        duration: geminiDecision.duration || "",
         rationale: geminiDecision.rationale,
         riskFactors: geminiDecision.riskFactors,
         tradeTargets: geminiDecision.tradeTargets,
