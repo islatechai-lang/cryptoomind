@@ -41,7 +41,6 @@ export default function UpgradeAnnouncementModal() {
           bg-card/95 backdrop-blur-xl
           p-0 gap-0 overflow-hidden
           shadow-xl
-          max-h-[90dvh] overflow-y-auto
           data-[state=open]:animate-in data-[state=closed]:animate-out
           data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
           data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
@@ -51,61 +50,60 @@ export default function UpgradeAnnouncementModal() {
                 <div className="h-1 w-full gradient-primary" />
 
                 {/* Content wrapper */}
-                <div className="relative px-5 pt-6 pb-5 sm:px-7 sm:pt-8 sm:pb-7">
+                <div className="relative px-5 pt-5 pb-5 sm:px-8 sm:pt-6 sm:pb-6">
                     {/* Background glow */}
                     <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-primary/10 blur-3xl" />
                     <div className="pointer-events-none absolute -bottom-20 right-0 w-48 h-48 rounded-full bg-accent/8 blur-3xl" />
 
                     {/* Badge */}
-                    <div className="relative flex justify-center mb-5">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider border border-primary/30 bg-primary/10 text-primary">
+                    <div className="relative flex justify-center mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-primary/30 bg-primary/10 text-primary">
                             <Sparkles className="w-3 h-3" />
-                            New Upgrade
+                            Upgrade Live
                         </span>
                     </div>
 
-                    {/* Icon */}
-                    <div className="relative flex justify-center mb-4">
+                    {/* Icon - Compacted */}
+                    <div className="relative flex justify-center mb-3">
                         <div className="relative">
-                            <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl scale-150" />
-                            <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/25 neon-border">
-                                <Rocket className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground drop-shadow-md" />
+                            <div className="absolute inset-0 rounded-xl bg-primary/20 blur-xl scale-125" />
+                            <div className="relative w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/25 neon-border">
+                                <Rocket className="w-6 h-6 text-primary-foreground drop-shadow-md" />
                             </div>
                         </div>
                     </div>
 
-                    <DialogHeader className="relative space-y-2 mb-5 sm:mb-6">
-                        <DialogTitle className="text-center text-xl sm:text-[22px] font-bold tracking-tight text-foreground">
+                    <DialogHeader className="relative space-y-1.5 mb-4">
+                        <DialogTitle className="text-center text-xl font-bold tracking-tight text-foreground">
                             CryptoMind AI Just Got Smarter
                         </DialogTitle>
-                        <DialogDescription className="text-center text-sm leading-relaxed text-muted-foreground">
+                        <DialogDescription className="text-center text-[13px] leading-relaxed text-muted-foreground max-w-[340px] mx-auto">
                             We've upgraded to{" "}
-                            <span className="font-semibold text-primary">
+                            <span className="font-bold text-primary">
                                 Gemini 3.1 Pro
                             </span>{" "}
-                            — Google's most advanced reasoning model. Expect sharper analysis,
-                            deeper insights, and stronger trade signals.
+                            — Google's latest and most advanced reasoning model for sharper market insights.
                         </DialogDescription>
                     </DialogHeader>
 
-                    {/* Feature cards */}
-                    <div className="relative grid gap-2.5 sm:gap-3 mb-6 sm:mb-7">
+                    {/* Feature cards - More compact vertical padding */}
+                    <div className="relative grid gap-2 mb-5">
                         <FeatureRow
-                            icon={<Brain className="w-4 h-4" />}
+                            icon={<Brain className="w-3.5 h-3.5" />}
                             title="Advanced Reasoning"
-                            description="Deeper strategic thinking for complex market conditions"
+                            description="Deeper strategic thinking for complex markets"
                             variant="primary"
                         />
                         <FeatureRow
-                            icon={<TrendingUp className="w-4 h-4" />}
+                            icon={<TrendingUp className="w-3.5 h-3.5" />}
                             title="Sharper Predictions"
-                            description="More accurate entry, exit, and stop-loss targets"
+                            description="More accurate entry and exit targets"
                             variant="accent"
                         />
                         <FeatureRow
-                            icon={<Zap className="w-4 h-4" />}
+                            icon={<Zap className="w-3.5 h-3.5" />}
                             title="Faster Processing"
-                            description="Real-time analysis with streaming AI responses"
+                            description="Real-time AI analysis with zero delay"
                             variant="chart"
                         />
                     </div>
@@ -115,15 +113,15 @@ export default function UpgradeAnnouncementModal() {
                         <Button
                             id="upgrade-modal-dismiss-btn"
                             onClick={handleDismiss}
-                            size="lg"
-                            className="w-full sm:w-auto px-10 py-3 text-sm font-semibold gradient-primary text-primary-foreground rounded-xl shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                            size="default"
+                            className="w-full sm:w-auto min-w-[160px] h-11 font-bold gradient-primary text-primary-foreground rounded-xl shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                         >
                             Let's Go 🚀
                         </Button>
                     </div>
 
-                    <p className="relative text-center text-[11px] text-muted-foreground/60 mt-4">
-                        Your predictions are now powered by Gemini 3.1 Pro
+                    <p className="relative text-center text-[10px] font-medium text-muted-foreground/50 mt-4">
+                        Powered by Gemini 3.1 Pro
                     </p>
                 </div>
             </DialogContent>
@@ -161,18 +159,18 @@ function FeatureRow({
 
     return (
         <div
-            className={`flex items-start gap-3 px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-xl border transition-colors duration-200 ${s.card}`}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl border transition-colors duration-200 ${s.card}`}
         >
             <div
-                className={`mt-0.5 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${s.icon}`}
+                className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${s.icon}`}
             >
                 {icon}
             </div>
             <div className="min-w-0">
-                <p className="text-[13px] sm:text-sm font-semibold text-foreground/90 leading-snug">
+                <p className="text-[13px] font-bold text-foreground/90 leading-tight">
                     {title}
                 </p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
                     {description}
                 </p>
             </div>
