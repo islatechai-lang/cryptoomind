@@ -42,8 +42,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     if (newTheme === "dark") {
       root.classList.add("dark");
+      document.body?.classList.add("dark");
     } else {
       root.classList.remove("dark");
+      document.body?.classList.remove("dark");
     }
   };
 
@@ -52,8 +54,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
+      document.body?.classList.add("dark");
     } else {
       root.classList.remove("dark");
+      document.body?.classList.remove("dark");
     }
 
     // 2. Listen for Whop's Frosted UI theme events
@@ -67,7 +71,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     root.addEventListener("frosted-ui:set-theme", handleFrostedTheme);
 
-    // 3. Query Whop SDK for current theme on mount
+    // 3. Listen for direct iframe postMessages from Whop parent
+    const handleMessage = (e: MessageEvent) => {
+      try {
+        const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+        if (data?.event === "onColorThemeChange" && data?.data?.appearance) {
+          applyTheme(data.data.appearance);
+        } else if (data?.appearance === "light" || data?.appearance === "dark") {
+          applyTheme(data.appearance);
+        }
+      } catch {
+        // Ignore non-JSON postMessages
+      }
+    };
+    window.addEventListener("message", handleMessage);
+
+    // 4. Query Whop SDK for current theme on mount
     if (whopIframeSdk) {
       try {
         (whopIframeSdk as any).getColorTheme?.().then((res: any) => {
@@ -82,7 +101,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.dispatchEvent(new CustomEvent("frosted-ui:mounted"));
     }
 
-    // 4. Fallback: Listen for system preference changes if outside Whop
+    // 5. Fallback: Listen for system preference changes if outside Whop
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleMediaChange = (e: MediaQueryListEvent) => {
       applyTheme(e.matches ? "dark" : "light");
@@ -92,6 +111,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       root.removeEventListener("frosted-ui:set-theme", handleFrostedTheme);
+      window.removeEventListener("message", handleMessage);
       mediaQuery.removeEventListener("change", handleMediaChange);
     };
   }, []);
