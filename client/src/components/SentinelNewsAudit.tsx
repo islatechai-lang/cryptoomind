@@ -109,7 +109,7 @@ export function SentinelNewsAudit({ headlines, isScanning }: SentinelNewsAuditPr
     };
 
     return (
-        <div className="space-y-4 rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+        <div className="space-y-4 rounded-xl overflow-hidden border border-border/80 dark:border-primary/20 bg-card dark:bg-card/30 backdrop-blur-sm shadow-xs">
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-primary/5 to-transparent flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -139,7 +139,7 @@ export function SentinelNewsAudit({ headlines, isScanning }: SentinelNewsAuditPr
 
                         {/* Main Headlines List */}
                         <div className="md:col-span-2">
-                            <ScrollArea className="h-60 rounded-lg border border-border/50 bg-black/20 pr-4">
+                            <ScrollArea className="h-60 rounded-lg border border-border/60 bg-muted/40 dark:bg-black/20 pr-4">
                                 <div className="space-y-2 p-2">
                                     <AnimatePresence>
                                         {isScanning ? (
@@ -156,7 +156,7 @@ export function SentinelNewsAudit({ headlines, isScanning }: SentinelNewsAuditPr
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: idx * 0.05 }}
-                                                    className="p-3 rounded-lg bg-card/50 border border-border/40 hover:bg-card/80 transition-all group"
+                                                    className="p-3 rounded-lg bg-card border border-border/60 hover:bg-muted/50 dark:hover:bg-card/80 transition-all group shadow-2xs"
                                                 >
                                                     <div className="flex flex-col gap-1">
                                                         <span className="text-xs font-bold text-primary opacity-70">

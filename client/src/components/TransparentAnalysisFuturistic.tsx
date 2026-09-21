@@ -196,7 +196,7 @@ function StageIndicator({ stage }: { stage: AnalysisStage }) {
 
   return (
     <div className="space-y-3 animate-slide-up" data-testid={`analysis-stage-${stage.stage}`}>
-      <div className="flex items-center justify-between p-4 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm transition-all duration-300">
+      <div className="flex items-center justify-between p-4 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm transition-all duration-300 shadow-xs">
         <div className="flex items-center gap-4 flex-1">
           <div className={`relative`}>
             {shouldShowSpinner ? (
@@ -208,10 +208,10 @@ function StageIndicator({ stage }: { stage: AnalysisStage }) {
               </div>
             ) : (
               <div className="relative">
-                <Icon className={`w-6 h-6 ${isComplete || hasFinalVerdictData ? 'text-green-400' : config.color}`} />
+                <Icon className={`w-6 h-6 ${isComplete || hasFinalVerdictData ? 'text-green-500 dark:text-green-400' : config.color}`} />
                 {(isComplete || hasFinalVerdictData) && (
                   <div className="absolute inset-0 blur-md opacity-50">
-                    <CheckCircle2 className="w-6 h-6 text-green-400" />
+                    <CheckCircle2 className="w-6 h-6 text-green-500 dark:text-green-400" />
                   </div>
                 )}
               </div>
@@ -230,7 +230,7 @@ function StageIndicator({ stage }: { stage: AnalysisStage }) {
           </div>
         </div>
         {(isComplete || hasFinalVerdictData) && (
-          <CheckCircle2 className="w-5 h-5 text-green-400" />
+          <CheckCircle2 className="w-5 h-5 text-green-500 dark:text-green-400" />
         )}
       </div>
       <Progress
@@ -245,17 +245,17 @@ function MarketDataDisplay({ data }: { data: MarketDataSnapshot }) {
   const priceDecimals = getPriceDecimals(data.currentPrice);
 
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm">
+    <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm shadow-xs">
       <div className="space-y-1">
         <div className="text-xs text-muted-foreground font-medium">Current Price</div>
-        <div className="font-mono font-bold text-2xl glow-text">
+        <div className="font-mono font-bold text-2xl glow-text text-foreground">
           ${formatPrice(data.currentPrice, priceDecimals)}
         </div>
       </div>
       <div className="space-y-1">
         <div className="text-xs text-muted-foreground font-medium">24h Change</div>
         <div
-          className={`font-mono font-bold text-2xl flex items-center gap-2 ${data.priceChange24h >= 0 ? "text-green-400" : "text-red-400"}`}
+          className={`font-mono font-bold text-2xl flex items-center gap-2 ${data.priceChange24h >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
         >
           {data.priceChange24h >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
           {data.priceChange24h >= 0 ? "+" : ""}
@@ -265,7 +265,7 @@ function MarketDataDisplay({ data }: { data: MarketDataSnapshot }) {
       <div className="space-y-1">
         <div className="text-xs text-muted-foreground font-medium">Volume Change</div>
         <div
-          className={`font-mono font-semibold text-lg ${data.volumeChange24h >= 0 ? "text-green-400" : "text-red-400"}`}
+          className={`font-mono font-semibold text-lg ${data.volumeChange24h >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
         >
           {data.volumeChange24h >= 0 ? "+" : ""}
           {data.volumeChange24h.toFixed(1)}%
@@ -314,7 +314,7 @@ function TechnicalIndicatorsDisplay({
               {categoryIndicators.map((indicator, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-lg bg-black/20 border border-white/5 backdrop-blur-sm hover:border-primary/20 transition-all group"
+                  className="p-3 rounded-lg bg-card/80 dark:bg-black/20 border border-border/80 dark:border-white/5 backdrop-blur-sm hover:border-primary/30 transition-all group shadow-2xs"
                   data-testid={`indicator - ${indicator.name.toLowerCase().replace(/\s+/g, "-")} `}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -326,7 +326,7 @@ function TechnicalIndicatorsDisplay({
                           <TooltipTrigger>
                             <HelpCircle className="w-3 h-3 text-muted-foreground/30 hover:text-primary transition-colors cursor-help" />
                           </TooltipTrigger>
-                          <TooltipContent className="bg-black/90 border-primary/20 text-xs max-w-[200px]">
+                          <TooltipContent className="bg-popover text-popover-foreground border-border text-xs max-w-[200px] shadow-md">
                             {indicator.description}
                           </TooltipContent>
                         </Tooltip>
@@ -334,9 +334,9 @@ function TechnicalIndicatorsDisplay({
                     </div>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] px-2 font-mono uppercase ${indicator.signal === "UP" ? "text-green-400 border-green-500/30 bg-green-500/5" :
-                        indicator.signal === "DOWN" ? "text-red-400 border-red-500/30 bg-red-500/5" :
-                          "text-muted-foreground border-border bg-muted/5"
+                      className={`text-[10px] px-2 font-mono uppercase ${indicator.signal === "UP" ? "text-green-600 dark:text-green-400 border-green-500/30 bg-green-500/10" :
+                        indicator.signal === "DOWN" ? "text-red-600 dark:text-red-400 border-red-500/30 bg-red-500/10" :
+                          "text-muted-foreground border-border bg-muted/20"
                         }`}
                     >
                       {indicator.signal === "UP" ? "BULLISH" : indicator.signal === "DOWN" ? "BEARISH" : "NEUTRAL"}
@@ -345,9 +345,9 @@ function TechnicalIndicatorsDisplay({
 
                   {/* Glass Box Value Visualization */}
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 h-1.5 bg-muted/20 rounded-full overflow-hidden flex relative">
+                    <div className="flex-1 h-1.5 bg-muted/40 rounded-full overflow-hidden flex relative">
                       {/* Center marker for neutral */}
-                      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10" />
+                      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border dark:bg-white/10" />
 
                       {/* Simulated value bar */}
                       {indicator.name.includes("RSI") || indicator.name.includes("MFI") || indicator.name.includes("ADX") ? (
@@ -378,30 +378,30 @@ function SignalAggregationDisplay({ data }: { data: SignalAggregationData }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-sm">
-          <div className="text-3xl font-black text-green-400 mb-1">{data.upSignalsCount}</div>
-          <div className="text-xs font-medium text-green-300">UP Signals</div>
+        <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 backdrop-blur-sm shadow-2xs">
+          <div className="text-3xl font-black text-green-600 dark:text-green-400 mb-1">{data.upSignalsCount}</div>
+          <div className="text-xs font-semibold text-green-700 dark:text-green-300">UP Signals</div>
         </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/30 backdrop-blur-sm">
-          <div className="text-3xl font-black text-red-400 mb-1">{data.downSignalsCount}</div>
-          <div className="text-xs font-medium text-red-300">DOWN Signals</div>
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 backdrop-blur-sm shadow-2xs">
+          <div className="text-3xl font-black text-red-600 dark:text-red-400 mb-1">{data.downSignalsCount}</div>
+          <div className="text-xs font-semibold text-red-700 dark:text-red-300">DOWN Signals</div>
         </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-muted/50 to-muted border border-border/40 backdrop-blur-sm">
+        <div className="p-4 rounded-xl bg-muted/60 border border-border/70 backdrop-blur-sm shadow-2xs">
           <div className="text-3xl font-black mb-1">{data.neutralSignalsCount}</div>
-          <div className="text-xs font-medium text-muted-foreground">Neutral</div>
+          <div className="text-xs font-semibold text-muted-foreground">Neutral</div>
         </div>
       </div>
 
-      <div className="space-y-3 p-4 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm">
+      <div className="space-y-3 p-4 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm shadow-xs">
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium">UP Score</span>
-          <span className="font-mono font-bold text-lg text-green-400">
+          <span className="font-mono font-bold text-lg text-green-600 dark:text-green-400">
             {data.upScore.toFixed(1)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium">DOWN Score</span>
-          <span className="font-mono font-bold text-lg text-red-400">
+          <span className="font-mono font-bold text-lg text-red-600 dark:text-red-400">
             {data.downScore.toFixed(1)}
           </span>
         </div>
@@ -526,19 +526,19 @@ function AIThinkingDisplay({ data, onComplete, isLoadedSession }: { data: AIThin
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between p-3 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm">
+      <div className="flex items-center justify-between p-3 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm shadow-xs">
         <div className="flex items-center gap-3">
-          <Brain className="w-5 h-5 text-pink-400 animate-pulse" />
+          <Brain className="w-5 h-5 text-pink-500 dark:text-pink-400 animate-pulse" />
           <span className="font-bold text-sm">AI Thought Process</span>
         </div>
-        <Badge variant="outline" className="font-semibold text-xs bg-gradient-to-r from-pink-500/10 to-purple-500/10 border-pink-500/30">
+        <Badge variant="outline" className="font-semibold text-xs bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/30">
           {data.modelUsed}
         </Badge>
       </div>
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="p-5 rounded-xl bg-card/50 border border-primary/30 backdrop-blur-sm max-h-80 overflow-y-auto scroll-smooth"
+        className="p-5 rounded-xl bg-card border border-primary/30 backdrop-blur-sm max-h-80 overflow-y-auto scroll-smooth shadow-xs"
       >
         <div className="text-sm font-mono leading-relaxed whitespace-pre-wrap">
           {displayedText || "AI is analyzing..."}
@@ -570,7 +570,7 @@ function FinalVerdictDisplay({
 
   return (
     <div className="space-y-4" data-testid="final-verdict-display">
-      <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10 border border-primary/30 backdrop-blur-sm">
+      <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-card dark:bg-gradient-to-br dark:from-primary/10 dark:via-accent/10 dark:to-primary/10 border border-primary/30 backdrop-blur-sm shadow-xs">
         <div className="space-y-1">
           <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
             Direction
@@ -587,16 +587,16 @@ function FinalVerdictDisplay({
                 <TooltipTrigger>
                   <HelpCircle className="w-3 h-3 text-muted-foreground/50 ml-1 inline-block" />
                 </TooltipTrigger>
-                <TooltipContent className="bg-black/95 border-white/10 text-xs p-3 space-y-1 z-50">
+                <TooltipContent className="bg-popover text-popover-foreground border-border text-xs p-3 space-y-1 z-50 shadow-md">
                   <p className="font-semibold text-primary mb-1">Confidence Scale:</p>
-                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">80-85%:</span> <span className="text-white/90">Moderate</span></div>
-                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">86-92%:</span> <span className="text-white/90">Strong</span></div>
-                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">93-99%:</span> <span className="text-emerald-400 font-bold">Exceptional</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">80-85%:</span> <span className="text-foreground/90 font-medium">Moderate</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">86-92%:</span> <span className="text-foreground/90 font-medium">Strong</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">93-99%:</span> <span className="text-emerald-600 dark:text-emerald-400 font-bold">Exceptional</span></div>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-green-400">
+          <div className="text-2xl sm:text-3xl font-black text-green-600 dark:text-green-400">
             {data.confidence}%
           </div>
         </div>
@@ -609,7 +609,7 @@ function FinalVerdictDisplay({
       </div>
 
       {data.explanation && (
-        <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/5 via-cyan-500/5 to-blue-500/5 border border-blue-500/20 backdrop-blur-sm">
+        <div className="p-4 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 border border-blue-500/20 backdrop-blur-sm shadow-xs">
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{data.explanation}</p>
         </div>
       )}
@@ -620,10 +620,10 @@ function FinalVerdictDisplay({
             Trade Targets
           </div>
 
-          <div className="p-3 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm space-y-3">
+          <div className="p-3 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm space-y-3 shadow-xs">
             {isActionable && data.tradeTargets ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="p-2 rounded-lg bg-primary/5 border border-primary/20">
+                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                   <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     ENTRY
                   </div>
@@ -636,11 +636,11 @@ function FinalVerdictDisplay({
                   </div>
                 </div>
 
-                <div className="p-2 rounded-lg bg-green-500/5 border border-green-500/20">
+                <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
                   <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     TARGET
                   </div>
-                  <div className="font-mono text-base sm:text-lg font-bold text-green-400">
+                  <div className="font-mono text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
                     {formatRange(
                       data.tradeTargets.target.low,
                       data.tradeTargets.target.high,
@@ -649,11 +649,11 @@ function FinalVerdictDisplay({
                   </div>
                 </div>
 
-                <div className="p-2 rounded-lg bg-red-500/5 border border-red-500/20">
+                <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
                   <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     STOP
                   </div>
-                  <div className="font-mono text-base sm:text-lg font-bold text-red-400">
+                  <div className="font-mono text-base sm:text-lg font-bold text-red-600 dark:text-red-400">
                     {formatPrice(data.tradeTargets.stop, priceDecimals)}
                   </div>
                 </div>
@@ -681,17 +681,17 @@ function FinalVerdictDisplay({
 
       <div className="space-y-3">
         <div className="space-y-2">
-          <div className="text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-400" />
+          <div className="text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
             KEY FACTORS
           </div>
           <div className="space-y-1">
             {(data.keyFactors ?? []).map((factor: string, idx: number) => (
               <div
                 key={idx}
-                className="flex items-start gap-3 p-2 rounded-lg bg-green-500/5 border border-green-500/20 backdrop-blur-sm"
+                className="flex items-start gap-3 p-2 rounded-lg bg-green-500/10 border border-green-500/20 backdrop-blur-sm shadow-2xs"
               >
-                <span className="text-green-400 mt-0.5 font-bold">•</span>
+                <span className="text-green-600 dark:text-green-400 mt-0.5 font-bold">•</span>
                 <span className="text-sm leading-relaxed flex-1">{factor}</span>
               </div>
             ))}
@@ -699,24 +699,24 @@ function FinalVerdictDisplay({
         </div>
 
         <div className="space-y-2">
-          <div className="text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent flex items-center gap-2">
-            <span className="text-orange-400">⚠</span>
+          <div className="text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent flex items-center gap-2">
+            <span className="text-orange-600 dark:text-orange-400">⚠</span>
             RISK FACTORS
           </div>
           <div className="space-y-1">
             {(data.riskFactors ?? []).map((risk: string, idx: number) => (
               <div
                 key={idx}
-                className="flex items-start gap-3 p-2 rounded-lg bg-orange-500/5 border border-orange-500/20 backdrop-blur-sm"
+                className="flex items-start gap-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 backdrop-blur-sm shadow-2xs"
               >
-                <span className="text-orange-400 mt-0.5">⚠</span>
+                <span className="text-orange-600 dark:text-orange-400 mt-0.5">⚠</span>
                 <span className="text-sm leading-relaxed flex-1">{risk}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-3 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm shadow-xs">
           <span className="text-sm font-medium uppercase tracking-wide">
             Quality Score
           </span>
@@ -806,8 +806,8 @@ export function TransparentAnalysis({
   }, [stages]);
 
   return (
-    <Card className="mt-4 overflow-hidden border border-primary/30 shadow-xl backdrop-blur-sm" data-testid="transparent-analysis">
-      <CardHeader className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
+    <Card className="mt-4 overflow-hidden border border-border/80 dark:border-primary/30 shadow-md bg-card backdrop-blur-sm" data-testid="transparent-analysis">
+      <CardHeader className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 border-b border-border/60">
         <CardTitle className="flex items-center gap-3 text-xl">
           <LineChart className="w-6 h-6 text-primary" />
           <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-black">
@@ -874,7 +874,7 @@ export function TransparentAnalysis({
                           {expandedStages.includes(stage.stage) ? "Hide detailed breakdown" : "View detailed breakdown"}
                         </span>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-4 p-5 rounded-xl bg-card/50 border border-border/40 backdrop-blur-sm">
+                      <CollapsibleContent className="mt-4 p-5 rounded-xl bg-card border border-border/80 dark:border-border/40 backdrop-blur-sm shadow-xs">
                         {stage.stage === "data_collection" && (
                           <MarketDataDisplay data={stage.data as MarketDataSnapshot} />
                         )}

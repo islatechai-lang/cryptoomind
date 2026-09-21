@@ -15,7 +15,7 @@ interface PairSelectorProps {
 
 export function PairSelector({ onSelectPair, selectedPair }: PairSelectorProps) {
   return (
-    <div className="space-y-4 md:space-y-5 p-4 md:p-5 rounded-xl bg-card/40 border border-card-border/50 backdrop-blur-sm" data-testid="pair-selector">
+    <div className="space-y-4 md:space-y-5 p-4 md:p-5 rounded-xl bg-card border border-border/80 shadow-xs backdrop-blur-sm" data-testid="pair-selector">
       <div className="space-y-2.5 md:space-y-3">
         <div className="text-xs md:text-sm font-bold text-foreground/80 uppercase tracking-wider">Crypto</div>
         <div className="flex flex-wrap gap-2 md:gap-2.5 lg:gap-3">

@@ -9,7 +9,7 @@ interface TimeframeSelectorProps {
 
 export function TimeframeSelector({ onSelectTimeframe, selectedTimeframe }: TimeframeSelectorProps) {
   return (
-    <div className="space-y-4 md:space-y-5 p-4 md:p-5 rounded-xl bg-card/40 border border-card-border/50 backdrop-blur-sm" data-testid="timeframe-selector">
+    <div className="space-y-4 md:space-y-5 p-4 md:p-5 rounded-xl bg-card border border-border/80 shadow-xs backdrop-blur-sm" data-testid="timeframe-selector">
       <div className="flex items-center gap-2 mb-3">
         <Clock className="w-5 h-5 text-primary" />
         <div className="text-sm md:text-base font-bold text-foreground">Select Trading Timeframe</div>

@@ -55,7 +55,7 @@ export function DecisionMatrix({ checks, score }: DecisionMatrixProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-slide-up">
             {/* Left Column: Holistic Score */}
-            <div className="md:col-span-1 flex flex-col items-center justify-center p-6 rounded-xl bg-gradient-to-br from-card to-card/50 border border-primary/10 shadow-lg relative overflow-hidden">
+            <div className="md:col-span-1 flex flex-col items-center justify-center p-6 rounded-xl bg-card border border-border/80 dark:border-primary/10 shadow-sm relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary),0.1),transparent_70%)]" />
 
                 <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
@@ -130,19 +130,19 @@ export function DecisionMatrix({ checks, score }: DecisionMatrixProps) {
                                         `}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="p-1.5 rounded-full bg-background/50 backdrop-blur-md">
-                                                {(check.status.toLowerCase() === "pass" || check.status === "PASS") && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-                                                {(check.status.toLowerCase() === "fail" || check.status === "FAIL") && <XCircle className="w-4 h-4 text-red-400" />}
-                                                {(check.status.toLowerCase() === "warn" || check.status === "WARN") && <AlertCircle className="w-4 h-4 text-amber-400" />}
+                                            <div className="p-1.5 rounded-full bg-card/80 dark:bg-background/50 backdrop-blur-md shadow-2xs">
+                                                {(check.status.toLowerCase() === "pass" || check.status === "PASS") && <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />}
+                                                {(check.status.toLowerCase() === "fail" || check.status === "FAIL") && <XCircle className="w-4 h-4 text-red-500 dark:text-red-400" />}
+                                                {(check.status.toLowerCase() === "warn" || check.status === "WARN") && <AlertCircle className="w-4 h-4 text-amber-500 dark:text-amber-400" />}
                                             </div>
                                             <span className="font-medium text-sm">{check.name}</span>
                                         </div>
-                                        <Badge variant="secondary" className="font-mono text-[10px] bg-background/40">
+                                        <Badge variant="secondary" className="font-mono text-[10px] bg-muted/60 dark:bg-background/40">
                                             {check.message || check.value}
                                         </Badge>
                                     </div>
                                 </TooltipTrigger>
-                                <TooltipContent side="top" className="bg-black/90 border-primary/20 p-3 max-w-[250px] space-y-1">
+                                <TooltipContent side="top" className="bg-popover text-popover-foreground border-border p-3 max-w-[250px] space-y-1 shadow-md">
                                     <div className="flex justify-between items-center text-xs font-bold text-primary mb-1">
                                         <span>Status: {check.status}</span>
                                         <span className={check.status.toLowerCase() === "pass" ? "text-emerald-400" : "text-red-400"}>

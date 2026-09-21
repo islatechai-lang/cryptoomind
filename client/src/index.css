@@ -4,8 +4,8 @@
 
 /* LIGHT MODE - Futuristic & Premium */
 :root {
-  --button-outline: rgba(0,0,0, .08);
-  --badge-outline: rgba(0,0,0, .04);
+  --button-outline: rgba(0,0,0, .16);
+  --badge-outline: rgba(0,0,0, .08);
 
   /* Automatic computation of border around primary / danger buttons */
   --opaque-button-border-intensity: -10;
@@ -475,11 +475,11 @@
     }
   }
 
-  .animate-slide-up {
-    animation: slide-up 0.5s ease-out;
+  .glow-text {
+    /* Crisp and clean in light mode */
   }
 
-  .glow-text {
+  .dark .glow-text {
     text-shadow: 0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3);
   }
 

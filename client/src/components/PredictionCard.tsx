@@ -47,8 +47,8 @@ export function PredictionCard({ prediction }: PredictionCardProps) {
     <div
       className={`rounded-xl p-5 backdrop-blur-sm transition-all border ${
         isNeutral 
-          ? "border-border/40 bg-card/40" 
-          : "border-accent/30 bg-gradient-to-br from-accent/10 to-transparent shadow-lg shadow-accent/5"
+          ? "border-border/80 bg-card shadow-xs" 
+          : "border-accent/40 bg-card dark:bg-gradient-to-br dark:from-accent/10 dark:to-transparent shadow-md"
       }`}
       data-testid="prediction-card"
     >

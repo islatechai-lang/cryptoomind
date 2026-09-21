@@ -31,7 +31,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         <div
           className={`rounded-xl p-3 md:p-4 lg:p-5 transition-all ${
             isBot
-              ? "bg-card/80 border border-card-border/60 backdrop-blur-sm shadow-sm"
+              ? "bg-card border border-border/80 shadow-xs backdrop-blur-sm"
               : "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20"
           }`}
         >
