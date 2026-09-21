@@ -1,55 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { whopIframeSdk } from "@/lib/whop-iframe";
 
 const MANUAL_THEME_KEY = "manual-theme-preference";
 
-function getManualThemePreference(): "light" | "dark" | null {
-  try {
-    const stored = localStorage.getItem(MANUAL_THEME_KEY);
-    if (stored === 'light' || stored === 'dark') {
-      return stored;
-    }
-  } catch (e) {
-    console.error("Failed to read manual theme preference:", e);
-  }
-  return null;
-}
-
-function setManualThemePreference(theme: "light" | "dark" | null) {
-  try {
-    if (theme === null) {
-      localStorage.removeItem(MANUAL_THEME_KEY);
-    } else {
-      localStorage.setItem(MANUAL_THEME_KEY, theme);
-    }
-  } catch (e) {
-    console.error("Failed to save manual theme preference:", e);
-  }
-}
-
-function getWhopThemePreference(): "light" | "dark" | null {
-  const cookies = document.cookie.split(';');
-  const themeCookie = cookies.find(cookie => cookie.trim().startsWith('whop-frosted-theme='));
-  
-  if (themeCookie) {
-    const theme = themeCookie.split('=')[1].trim();
-    return theme === 'light' ? 'light' : theme === 'dark' ? 'dark' : null;
-  }
-  
-  return null;
-}
-
 function getSystemPreference(): "light" | "dark" {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function determineTheme(): "light" | "dark" {
-  const manualTheme = getManualThemePreference();
-  if (manualTheme) return manualTheme;
-  
-  const whopTheme = getWhopThemePreference();
-  if (whopTheme) return whopTheme;
-  
-  return getSystemPreference();
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 interface ThemeContextType {
@@ -70,64 +26,87 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<"light" | "dark">(() => determineTheme());
-  const [isManual, setIsManual] = useState<boolean>(() => getManualThemePreference() !== null);
+  // Clear any old manual override so Whop mode preference always takes priority
+  try {
+    localStorage.removeItem(MANUAL_THEME_KEY);
+  } catch (e) {
+    // Ignore storage errors
+  }
+
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    return getSystemPreference();
+  });
+
+  const applyTheme = (newTheme: "light" | "dark") => {
+    setTheme(newTheme);
+    const root = document.documentElement;
+    if (newTheme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  };
 
   useEffect(() => {
-    const checkTheme = () => {
-      const newTheme = determineTheme();
-      const newIsManual = getManualThemePreference() !== null;
-      
-      if (newTheme !== theme) {
-        setTheme(newTheme);
-      }
-      if (newIsManual !== isManual) {
-        setIsManual(newIsManual);
+    // 1. Apply initial theme
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+
+    // 2. Listen for Whop's Frosted UI theme events
+    const handleFrostedTheme = (e: Event) => {
+      const customEvent = e as CustomEvent<{ appearance?: "light" | "dark" }>;
+      const appearance = customEvent.detail?.appearance;
+      if (appearance === "light" || appearance === "dark") {
+        applyTheme(appearance);
       }
     };
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      if (!getManualThemePreference()) {
-        checkTheme();
+    root.addEventListener("frosted-ui:set-theme", handleFrostedTheme);
+
+    // 3. Query Whop SDK for current theme on mount
+    if (whopIframeSdk) {
+      try {
+        (whopIframeSdk as any).getColorTheme?.().then((res: any) => {
+          if (res?.appearance === "light" || res?.appearance === "dark") {
+            applyTheme(res.appearance);
+          }
+        }).catch(() => null);
+      } catch (err) {
+        console.warn("Failed to get color theme from Whop SDK:", err);
       }
+      // Notify Whop iframe SDK that Frosted UI is mounted to trigger initial theme sync
+      root.dispatchEvent(new CustomEvent("frosted-ui:mounted"));
+    }
+
+    // 4. Fallback: Listen for system preference changes if outside Whop
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      applyTheme(e.matches ? "dark" : "light");
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    const intervalId = setInterval(checkTheme, 1000);
+    mediaQuery.addEventListener("change", handleMediaChange);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-      clearInterval(intervalId);
+      root.removeEventListener("frosted-ui:set-theme", handleFrostedTheme);
+      mediaQuery.removeEventListener("change", handleMediaChange);
     };
-  }, [theme, isManual]);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [theme]);
+  }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setManualThemePreference(newTheme);
-    setTheme(newTheme);
-    setIsManual(true);
+    const next = theme === "light" ? "dark" : "light";
+    applyTheme(next);
   };
 
   const resetToAuto = () => {
-    setManualThemePreference(null);
-    setIsManual(false);
-    const autoTheme = getWhopThemePreference() || getSystemPreference();
-    setTheme(autoTheme);
+    applyTheme(getSystemPreference());
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, resetToAuto, isManual }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, resetToAuto, isManual: false }}>
       {children}
     </ThemeContext.Provider>
   );
