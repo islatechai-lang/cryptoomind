@@ -254,15 +254,22 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-            <Button variant="outline" size="sm" asChild data-testid="button-act-as-member">
+            <Button
+              variant="default"
+              size="sm"
+              asChild
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium shadow-sm"
+              data-testid="button-act-as-member"
+            >
               <Link href="/">
                 <User className="w-3.5 h-3.5 sm:mr-1.5" />
                 <span className="hidden sm:inline">Act as a Member</span>
+                <span className="sm:hidden">Member</span>
               </Link>
             </Button>
-            <Badge variant="default" className="text-xs gap-1 md:gap-1.5 bg-primary text-primary-foreground px-2 py-1">
+            <Badge variant="outline" className="text-xs gap-1 md:gap-1.5 border-primary/30 bg-primary/10 text-primary px-2 py-1 font-semibold">
               <Sparkles className="w-3 h-3" />
-              <span className="hidden sm:inline font-semibold">Admin</span>
+              <span className="hidden sm:inline">Admin</span>
             </Badge>
           </div>
         </div>
