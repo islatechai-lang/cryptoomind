@@ -776,14 +776,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ isAdmin: isDevAdmin });
       }
 
-      // If Whop is not enabled in production, return error
-      if (!isWhopEnabled || !whopSdk) {
-        return res.status(503).json({
-          error: "Authentication service unavailable",
-          details: "WHOP_API_KEY and WHOP_APP_ID must be configured"
-        });
-      }
-
       const user = await verifyWhopToken(req);
 
       // In development, if no user token, use dev defaults
@@ -793,117 +785,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (!user) {
-        return res.status(401).json({ error: "Unauthorized - invalid or missing token" });
+        return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // If no resourceId provided or it's 'default', return false
-      // Admin controls should only show when viewing a specific company/experience
       if (!resourceId || resourceId === 'default') {
         return res.json({ isAdmin: false });
       }
 
-      // Use the provided resourceId for access check (don't use JWT-derived company)
-      let checkResourceId = resourceId;
-      let companyId: string | undefined;
+      // Resolve companyId whether resourceId is exp_... or biz_...
+      let companyId = resourceId.startsWith('biz_') 
+        ? resourceId 
+        : await resolveCompanyIdFromExperience(resourceId);
+      if (!companyId) return res.json({ isAdmin: false });
 
-      if (!checkResourceId) {
-        return res.status(500).json({
-          error: "Resource ID not configured",
-          details: "Resource ID must be provided or available in environment"
-        });
-      }
-
-      // Check access using the resource ID (works for both experience and company IDs)
-      // IMPORTANT: Resolve companyId from checkResourceId, not from user's JWT token
-      let access;
-      if (checkResourceId.startsWith('exp_')) {
-        access = await checkExperienceAccess(user.userId, checkResourceId);
-        // Resolve company ID from the experience being checked
-        console.log(`[Whop] Resolving company ID from experience: ${checkResourceId}`);
-        try {
-          companyId = await resolveCompanyIdFromExperience(checkResourceId);
-        } catch (error) {
-          console.error(`[Whop] Failed to resolve company from experience ${checkResourceId}:`, error);
-          // If we can't resolve the company, deny admin access
-          return res.json({ isAdmin: false });
-        }
-      } else if (checkResourceId.startsWith('biz_')) {
-        access = await checkCompanyAccess(user.userId, checkResourceId);
-        // The resource ID is already a company ID
-        companyId = checkResourceId;
-      } else {
-        // Try as experience first, then company
-        access = await checkExperienceAccess(user.userId, checkResourceId);
-        // Try to resolve company from this resource
-        try {
-          companyId = await resolveCompanyIdFromExperience(checkResourceId);
-        } catch {
-          // If it fails, assume it's a company ID
-          companyId = checkResourceId;
-        }
-      }
-
-      // Check if user has access to the resource (member or admin)
-      if (!access.hasAccess) {
-        console.log(`[Whop] User ${user.userId} does not have access to resource ${checkResourceId}`);
-        return res.json({ isAdmin: false });
-      }
-
-      // Verify company ID is available
-      if (!companyId) {
-        console.error(`[Whop] Could not determine company ID for resource ${checkResourceId}`);
-        return res.json({ isAdmin: false });
-      }
-
-      // ONLY company owners can access admin dashboard
-      // Moderators, admins, and other roles are treated as regular members
+      // Verify ownership via Whop SDK
       const ownerCheck = await checkIfUserIsOwner(user.userId, companyId);
-
-      // If Whop API failed, fall back to cached admin status to avoid locking out owners
-      if (ownerCheck.error) {
-        console.warn(`[Whop] Owner check failed for user ${user.userId}, checking cached status`);
-        const cachedAdminStatus = await storage.isAdminForCompany(user.userId, companyId);
-
-        if (cachedAdminStatus) {
-          // User was previously verified as owner, trust the cached status during outage
-          console.log(`[Whop] Using cached admin status (true) for user ${user.userId} during API failure`);
-          return res.json({ isAdmin: true });
-        } else {
-          // New owner or unknown status - cannot verify without API
-          // Return service unavailable instead of denying access
-          console.error(`[Whop] Cannot verify owner status for user ${user.userId} - no cached data and API unavailable`);
-          return res.status(503).json({
-            error: "Owner verification service temporarily unavailable",
-            details: "Unable to verify owner status. Please try again later."
-          });
-        }
-      }
-
-      // Auto-register owner if they have owner access - store company ID for future requests
       if (ownerCheck.isOwner) {
-        console.log(`[Whop] Registering owner ${user.userId} with company: ${companyId}`);
-        await storage.registerAdmin(user.userId, companyId);
-        return res.json({ isAdmin: true });
+        try {
+          await storage.registerAdmin(user.userId, companyId);
+        } catch {}
       }
-
-      // User is explicitly not an owner (they're a member, moderator, admin, etc.)
-      // Remove cached admin status if it exists (handles owner demotion)
-      const wasAdminForCompany = await storage.isAdminForCompany(user.userId, companyId);
-      const hasAnyAdminRecord = await storage.getAdminByUserId(user.userId);
-
-      if (wasAdminForCompany || hasAnyAdminRecord) {
-        // Remove admin record (handles both company-specific and legacy records)
-        console.log(`[Whop] User ${user.userId} is not owner of company ${companyId} - removing any cached admin status`);
-        await storage.removeAdmin(user.userId, companyId);
-      }
-
+      return res.json({ isAdmin: !!ownerCheck.isOwner });
+    } catch (err) {
       return res.json({ isAdmin: false });
-    } catch (error) {
-      console.error("[Admin] Error checking status:", error instanceof Error ? error.message : "Unknown error");
-      return res.status(500).json({
-        error: "Failed to check admin status",
-        details: error instanceof Error ? error.message : "Unknown error"
-      });
     }
   });
 

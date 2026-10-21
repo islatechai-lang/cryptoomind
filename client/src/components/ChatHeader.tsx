@@ -53,19 +53,15 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
     queryKey: ["/api/admin/check", user?.companyId, user?.experienceId],
     queryFn: async () => {
       const resourceId = user?.companyId || user?.experienceId;
-      if (!resourceId) {
-        return { isAdmin: false };
-      }
-      const response = await fetch("/api/admin/check", {
+      if (!resourceId) return { isAdmin: false };
+      const res = await fetch("/api/admin/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ resourceId }),
       });
-      if (!response.ok) return { isAdmin: false };
-      return response.json();
+      return res.ok ? res.json() : { isAdmin: false };
     },
-    retry: false,
     enabled: !!user && (!!user.companyId || !!user.experienceId),
   });
 
