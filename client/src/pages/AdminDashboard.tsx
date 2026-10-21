@@ -228,12 +228,11 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background" data-testid="admin-dashboard">
-      <header className="relative border-b border-primary/20 bg-gradient-to-r from-background via-primary/5 to-background backdrop-blur-xl shadow-lg">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 opacity-50"></div>
-        <div className="relative flex items-center justify-between gap-2 md:gap-4 px-3 md:px-6 lg:px-8 py-3 md:py-4 w-full">
+    <div className="flex flex-col h-screen w-full bg-background text-foreground" data-testid="admin-dashboard">
+      <header className="relative border-b border-border bg-card/80 backdrop-blur-xl shadow-xs">
+        <div className="flex items-center justify-between gap-2 md:gap-4 px-3 md:px-6 lg:px-8 py-3 md:py-4 w-full">
           <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-            <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0 ring-2 ring-primary/30" data-testid="avatar-admin">
+            <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0 ring-2 ring-primary/20" data-testid="avatar-admin">
               {user?.profile_pic_url && (
                 <AvatarImage
                   src={user.profile_pic_url}
@@ -241,10 +240,10 @@ export default function AdminDashboard() {
                   crossOrigin="anonymous"
                 />
               )}
-              <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">{initials}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col min-w-0 flex-1">
-              <h2 className="text-xs md:text-base font-bold truncate bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent" data-testid="text-admin-name">
+              <h2 className="text-xs md:text-base font-bold truncate text-foreground" data-testid="text-admin-name">
                 {user?.name || "Admin Dashboard"}
               </h2>
               <p className="text-xs text-muted-foreground truncate hidden sm:block">
@@ -253,17 +252,20 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             <Link href="/">
-              <span 
-                className="text-xs md:text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors hidden sm:inline"
+              <Button
+                variant="default"
+                size="sm"
+                className="gap-1.5 font-medium shadow-xs bg-primary text-primary-foreground hover:bg-primary/90"
                 data-testid="link-act-as-member"
               >
-                Act as a Member
-              </span>
-              <User className="w-4 h-4 text-muted-foreground sm:hidden" />
+                <User className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Act as a Member</span>
+                <span className="sm:hidden">Member</span>
+              </Button>
             </Link>
-            <Badge variant="default" className="text-xs gap-1 bg-primary text-primary-foreground px-2 py-1">
+            <Badge variant="outline" className="text-xs gap-1 border-primary/30 bg-primary/10 text-primary px-2.5 py-1 font-semibold dark:bg-primary/20">
               <Sparkles className="w-3 h-3" />
               <span className="hidden sm:inline font-semibold">Admin</span>
             </Badge>
@@ -272,16 +274,15 @@ export default function AdminDashboard() {
       </header>
 
       <div className="flex-1 overflow-y-auto px-3 md:px-6 lg:px-8 py-4 md:py-8">
-        <div className="space-y-4 md:space-y-8">
+        <div className="space-y-4 md:space-y-8 max-w-7xl mx-auto">
           <div className="grid gap-4 md:gap-6 md:grid-cols-2">
-            <Card data-testid="card-balance" className="relative overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm border-primary/20 shadow-lg">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
+            <Card data-testid="card-balance" className="relative overflow-hidden bg-card border-border shadow-xs">
               <CardHeader className="relative flex flex-row items-center justify-between gap-2 space-y-0 pb-3">
                 <div className="flex-1">
-                  <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Available Balance</CardTitle>
+                  <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Available Balance</CardTitle>
                 </div>
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center backdrop-blur-sm">
-                  <DollarSign className="h-5 w-5 text-primary" />
+                <div className="h-10 w-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </CardHeader>
               <CardContent className="relative">
@@ -289,7 +290,7 @@ export default function AdminDashboard() {
                   <Skeleton className="h-10 w-32" />
                 ) : (
                   <>
-                    <div className="text-3xl md:text-4xl font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent" data-testid="text-balance">
+                    <div className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight" data-testid="text-balance">
                       {formatCurrency(balance?.balance || 0)}
                     </div>
                     <p className="text-xs text-muted-foreground mt-2 font-medium">
@@ -300,14 +301,13 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden bg-gradient-to-br from-card via-card to-accent/5 backdrop-blur-sm border-accent/20 shadow-lg">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl"></div>
+            <Card className="relative overflow-hidden bg-card border-border shadow-xs">
               <CardHeader className="relative flex flex-row items-center justify-between gap-2 space-y-0 pb-3">
                 <div className="flex-1">
-                  <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Withdraw Funds</CardTitle>
+                  <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Withdraw Funds</CardTitle>
                 </div>
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/30 flex items-center justify-center backdrop-blur-sm">
-                  <Wallet className="h-5 w-5 text-accent" />
+                <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
               </CardHeader>
               <CardContent className="relative">
@@ -319,32 +319,32 @@ export default function AdminDashboard() {
                     <Button
                       data-testid="button-withdraw"
                       disabled={!balance?.balance || balance.balance <= 0}
-                      className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 border-primary/30"
+                      className="w-full font-semibold shadow-xs bg-primary text-primary-foreground hover:bg-primary/90"
                       size="default"
                     >
                       Withdraw
                     </Button>
                   </DialogTrigger>
-                  <DialogContent data-testid="dialog-withdraw" className="sm:max-w-md">
+                  <DialogContent data-testid="dialog-withdraw" className="sm:max-w-md bg-card text-card-foreground border-border">
                     <DialogHeader className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <DialogTitle className="text-xl">Request Withdrawal</DialogTitle>
+                        <DialogTitle className="text-xl font-bold text-foreground">Request Withdrawal</DialogTitle>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipContent className="bg-popover text-popover-foreground border-border">
                             <p className="text-xs">Instant withdrawal is not currently available.<br />Requests are processed manually.</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <DialogDescription className="text-sm">
+                      <DialogDescription className="text-sm text-muted-foreground">
                         Enter the amount you'd like to withdraw.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 pt-4 pb-2">
                       <div className="space-y-3">
-                        <Label htmlFor="amount" className="text-sm font-medium">
+                        <Label htmlFor="amount" className="text-sm font-medium text-foreground">
                           Amount (USD)
                         </Label>
                         <Input
@@ -357,9 +357,9 @@ export default function AdminDashboard() {
                           value={withdrawAmount}
                           onChange={(e) => setWithdrawAmount(e.target.value)}
                           data-testid="input-withdraw-amount"
-                          className="text-base h-11"
+                          className="text-base h-11 bg-background text-foreground border-border"
                         />
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground font-medium">
                           Available balance: {formatCurrency(balance?.balance || 0)}
                         </p>
                       </div>
@@ -389,29 +389,29 @@ export default function AdminDashboard() {
             </Card>
           </div>
 
-          <Card data-testid="card-memberships" className="relative overflow-hidden bg-gradient-to-br from-card via-card to-purple-500/5 backdrop-blur-sm border-purple-500/20 shadow-lg">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
-            <CardHeader>
+          {/* Active Subscribers Card */}
+          <Card data-testid="card-memberships" className="relative overflow-hidden bg-card border-border shadow-xs">
+            <CardHeader className="border-b border-border/50 pb-4">
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-purple-400" />
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 md:h-10 md:w-10 rounded-lg bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="min-w-0">
-                    <CardTitle className="text-sm md:text-base bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-black">Active Subscribers</CardTitle>
-                    <CardDescription className="mt-1 text-xs md:text-sm">
+                    <CardTitle className="text-sm md:text-base font-bold text-foreground">Active Subscribers</CardTitle>
+                    <CardDescription className="mt-0.5 text-xs md:text-sm text-muted-foreground">
                       Members with active or trial subscriptions
                     </CardDescription>
                   </div>
                 </div>
-                <div className="flex items-center justify-center min-w-[2.5rem] h-8 md:h-10 px-3 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30" data-testid="count-active-subscribers">
-                  <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <div className="flex items-center justify-center min-w-[2.5rem] h-8 md:h-9 px-3 rounded-md bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800" data-testid="count-active-subscribers">
+                  <span className="text-base md:text-lg font-bold text-purple-700 dark:text-purple-300">
                     {membershipsLoading ? "..." : (memberships?.data?.length ?? 0)}
                   </span>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               {membershipsLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
@@ -435,10 +435,10 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={membership.id}
-                        className="flex items-start gap-2 md:gap-4 p-3 md:p-4 rounded-lg bg-gradient-to-br from-background/80 to-primary/5 border border-primary/20 hover-elevate backdrop-blur-sm"
+                        className="flex items-start gap-3 md:gap-4 p-3.5 md:p-4 rounded-lg bg-card/60 border border-border/80 hover:border-border transition-colors shadow-2xs"
                         data-testid={`membership-${membership.id}`}
                       >
-                        <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0 ring-2 ring-primary/20" data-testid={`avatar-${membership.user?.username || membership.id}`}>
+                        <Avatar className="h-9 w-9 md:h-10 md:w-10 flex-shrink-0 ring-1 ring-border" data-testid={`avatar-${membership.user?.username || membership.id}`}>
                           {membership.user?.profile_pic_url && (
                             <AvatarImage
                               src={membership.user.profile_pic_url}
@@ -449,13 +449,13 @@ export default function AdminDashboard() {
                               }}
                             />
                           )}
-                          <AvatarFallback className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-foreground">{userInitials}</AvatarFallback>
+                          <AvatarFallback className="bg-muted text-foreground font-semibold">{userInitials}</AvatarFallback>
                         </Avatar>
 
                         <div className="flex-1 min-w-0 space-y-2">
                           <div className="flex items-start justify-between gap-2 flex-wrap">
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm md:text-base font-medium truncate" data-testid={`text-user-${membership.id}`}>
+                              <p className="text-sm md:text-base font-semibold text-foreground truncate" data-testid={`text-user-${membership.id}`}>
                                 {displayName}
                               </p>
                               {membership.user?.username && (
@@ -469,6 +469,7 @@ export default function AdminDashboard() {
                               <Badge
                                 variant={statusInfo.variant as any}
                                 data-testid={`badge-status-${membership.id}`}
+                                className="font-medium"
                               >
                                 {statusInfo.label}
                               </Badge>
@@ -478,7 +479,7 @@ export default function AdminDashboard() {
                           <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
                             <div className="flex items-center gap-1.5">
                               <span className="font-medium text-foreground">Product:</span>
-                              <span>{membership.product.title}</span>
+                              <span className="text-foreground/80 dark:text-muted-foreground">{membership.product.title}</span>
                             </div>
 
                             {membership.renewal_period_end ? (
@@ -486,19 +487,19 @@ export default function AdminDashboard() {
                                 <span className="font-medium text-foreground">
                                   {membership.cancel_at_period_end ? "Ends:" : "Renews:"}
                                 </span>
-                                <span>{format(new Date(membership.renewal_period_end), "MMM d, yyyy")}</span>
+                                <span className="text-foreground/80 dark:text-muted-foreground">{format(new Date(membership.renewal_period_end), "MMM d, yyyy")}</span>
                               </div>
                             ) : (
                               <div className="flex items-center gap-1.5">
                                 <span className="font-medium text-foreground">Type:</span>
-                                <span>One-time purchase</span>
+                                <span className="text-foreground/80 dark:text-muted-foreground">One-time purchase</span>
                               </div>
                             )}
 
                             {membership.renewal_period_start && (
                               <div className="flex items-center gap-1.5">
                                 <span className="font-medium text-foreground">Current period:</span>
-                                <span>
+                                <span className="text-foreground/80 dark:text-muted-foreground">
                                   {format(new Date(membership.renewal_period_start), "MMM d")} - {" "}
                                   {membership.renewal_period_end && format(new Date(membership.renewal_period_end), "MMM d, yyyy")}
                                 </span>
@@ -508,23 +509,23 @@ export default function AdminDashboard() {
                             {membership.canceled_at && (
                               <div className="flex items-center gap-1.5">
                                 <span className="font-medium text-foreground">Canceled:</span>
-                                <span>{format(new Date(membership.canceled_at), "MMM d, yyyy")}</span>
+                                <span className="text-foreground/80 dark:text-muted-foreground">{format(new Date(membership.canceled_at), "MMM d, yyyy")}</span>
                               </div>
                             )}
 
                             {membership.cancellation_reason && (
                               <div className="flex items-center gap-1.5">
                                 <span className="font-medium text-foreground">Reason:</span>
-                                <span className="italic">{membership.cancellation_reason}</span>
+                                <span className="italic text-foreground/80 dark:text-muted-foreground">{membership.cancellation_reason}</span>
                               </div>
                             )}
 
                             <div className="flex items-center gap-1.5">
                               <span className="font-medium text-foreground">Member since:</span>
-                              <span>{format(new Date(membership.created_at), "MMM d, yyyy")}</span>
+                              <span className="text-foreground/80 dark:text-muted-foreground">{format(new Date(membership.created_at), "MMM d, yyyy")}</span>
                             </div>
 
-                            <div className="flex items-center gap-1.5 pt-1">
+                            <div className="flex items-center gap-1.5 pt-0.5">
                               <span className="font-medium text-foreground">Status:</span>
                               <span className="text-muted-foreground italic">{statusInfo.description}</span>
                             </div>
@@ -536,13 +537,13 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-16">
-                  <div className="h-12 w-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                  <div className="h-12 w-12 rounded-full bg-muted/60 flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <p className="text-muted-foreground" data-testid="text-no-memberships">
+                  <p className="text-sm font-medium text-foreground" data-testid="text-no-memberships">
                     No active subscribers
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Active member subscriptions will appear here
                   </p>
                 </div>
@@ -550,22 +551,22 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card data-testid="card-commission-history" className="relative overflow-hidden bg-gradient-to-br from-card via-card to-green-500/5 backdrop-blur-sm border-green-500/20 shadow-lg">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent"></div>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 flex items-center justify-center flex-shrink-0">
-                  <History className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
+          {/* Commission History Card */}
+          <Card data-testid="card-commission-history" className="relative overflow-hidden bg-card border-border shadow-xs">
+            <CardHeader className="border-b border-border/50 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 md:h-10 md:w-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center flex-shrink-0">
+                  <History className="h-4 w-4 md:h-5 md:w-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div className="min-w-0">
-                  <CardTitle className="text-sm md:text-base bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-black">Commission History</CardTitle>
-                  <CardDescription className="mt-1 text-xs md:text-sm">
+                  <CardTitle className="text-sm md:text-base font-bold text-foreground">Commission History</CardTitle>
+                  <CardDescription className="mt-0.5 text-xs md:text-sm text-muted-foreground">
                     Your earnings from member subscriptions (50/50 revenue split)
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               {commissionsLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
@@ -577,29 +578,29 @@ export default function AdminDashboard() {
                   {commissions.map((commission) => (
                     <div
                       key={commission.id}
-                      className="flex items-center justify-between gap-2 md:gap-4 p-3 md:p-4 rounded-lg bg-gradient-to-br from-background/80 to-green-500/5 border border-green-500/20 hover-elevate backdrop-blur-sm"
+                      className="flex items-center justify-between gap-3 md:gap-4 p-3.5 md:p-4 rounded-lg bg-card/60 border border-border/80 hover:border-border transition-colors shadow-2xs"
                       data-testid={`commission-${commission.id}`}
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className="text-xs font-mono">
+                          <Badge variant="outline" className="text-xs font-mono border-border text-foreground">
                             {commission.paymentId.substring(0, 8)}
                           </Badge>
                         </div>
                         {commission.customerEmail && (
-                          <p className="text-xs md:text-sm text-muted-foreground truncate" data-testid={`text-customer-${commission.id}`}>
+                          <p className="text-xs md:text-sm font-medium text-foreground truncate" data-testid={`text-customer-${commission.id}`}>
                             {commission.customerEmail}
                           </p>
                         )}
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {format(new Date(commission.createdAt), "MMM d, yyyy 'at' h:mm a")}
                         </p>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <p className="text-base md:text-xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent" data-testid={`text-commission-amount-${commission.id}`}>
+                        <p className="text-base md:text-xl font-bold text-emerald-600 dark:text-emerald-400" data-testid={`text-commission-amount-${commission.id}`}>
                           {formatCurrency(commission.commissionAmount)}
                         </p>
-                        <p className="text-xs text-muted-foreground whitespace-nowrap">
+                        <p className="text-xs text-muted-foreground whitespace-nowrap mt-0.5">
                           of {formatCurrency(commission.amount)}
                         </p>
                       </div>
@@ -608,13 +609,13 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-16">
-                  <div className="h-12 w-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                  <div className="h-12 w-12 rounded-full bg-muted/60 flex items-center justify-center mx-auto mb-4">
                     <DollarSign className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <p className="text-muted-foreground" data-testid="text-no-commissions">
+                  <p className="text-sm font-medium text-foreground" data-testid="text-no-commissions">
                     No commissions yet
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Earnings will appear here when members subscribe
                   </p>
                 </div>
@@ -622,41 +623,41 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden bg-gradient-to-br from-muted/30 via-muted/20 to-primary/5 backdrop-blur-sm border-primary/10 shadow-lg">
-            <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-primary/5 to-transparent rounded-full blur-3xl"></div>
-            <CardHeader className="relative">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center">
+          {/* How It Works Card */}
+          <Card className="relative overflow-hidden bg-card border-border shadow-xs">
+            <CardHeader className="border-b border-border/50 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                   <Info className="h-4 w-4 text-primary" />
                 </div>
-                <CardTitle className="text-base font-bold">How It Works</CardTitle>
+                <CardTitle className="text-base font-bold text-foreground">How It Works</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="relative">
-              <ul className="text-sm text-muted-foreground space-y-3">
+            <CardContent className="pt-4">
+              <ul className="text-sm space-y-3">
                 <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="h-6 w-6 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-primary text-xs font-bold">1</span>
                   </div>
-                  <span>Earn $2.17 (50% commission after fees) for each $5 weekly subscription payment</span>
+                  <span className="text-foreground/80 dark:text-muted-foreground">Earn $2.17 (50% commission after fees) for each $5 weekly subscription payment</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="h-6 w-6 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-primary text-xs font-bold">2</span>
                   </div>
-                  <span>Commissions are calculated automatically when members are billed</span>
+                  <span className="text-foreground/80 dark:text-muted-foreground">Commissions are calculated automatically when members are billed</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="h-6 w-6 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-primary text-xs font-bold">3</span>
                   </div>
-                  <span>Both initial payments and recurring weekly renewals generate earnings</span>
+                  <span className="text-foreground/80 dark:text-muted-foreground">Both initial payments and recurring weekly renewals generate earnings</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="h-6 w-6 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-primary text-xs font-bold">4</span>
                   </div>
-                  <span>Request a withdrawal anytime to receive your balance</span>
+                  <span className="text-foreground/80 dark:text-muted-foreground">Request a withdrawal anytime to receive your balance</span>
                 </li>
               </ul>
             </CardContent>
