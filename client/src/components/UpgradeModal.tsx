@@ -48,21 +48,22 @@ export function UpgradeModal({
         queryClient.invalidateQueries({ queryKey: ["/api/credits"] });
         queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
         toast({
-          title: planType === "pro" ? "Welcome to Pro Plan!" : "Welcome to Starter Plan!",
+          title: planType === "pro" ? "Checkout opened!" : "Checkout opened!",
           description:
             planType === "pro"
-              ? "Your 3-day free trial is active. Enjoy high-precision predictions powered by Gemini 3.8 Flash!"
-              : "Your Starter Plan is active with 20 monthly predictions powered by Gemini 3.8 Flash!",
+              ? "Complete your checkout to activate your 3-day free trial of Pro!"
+              : "Complete your checkout to activate your Starter Plan with 20 monthly predictions!",
         });
         onOpenChange(false);
       }
     } catch (err) {
       console.error("[UpgradeModal] Purchase error:", err);
       toast({
-        title: "Purchase failed",
-        description: "There was an issue initiating the checkout. Please try again.",
-        variant: "destructive",
+        title: "Checkout Notice",
+        description: "Opening Whop checkout page...",
       });
+      window.open(`https://whop.com/checkout/${planId}`, "_blank");
+      onOpenChange(false);
     } finally {
       setLoadingPlan(null);
     }
@@ -77,20 +78,21 @@ export function UpgradeModal({
         "
         data-testid="modal-upgrade"
       >
-        <DialogHeader className="text-center space-y-2 mb-2">
-          <div className="flex justify-center">
+        {/* Centered Header across all screen sizes */}
+        <DialogHeader className="flex flex-col items-center justify-center text-center sm:text-center space-y-2 mb-2 w-full">
+          <div className="flex justify-center w-full">
             <Badge
               variant="outline"
-              className="gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border-primary/30 bg-primary/10 text-primary"
+              className="gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border-primary/30 bg-primary/10 text-primary mx-auto"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Upgrade Your Intelligence
             </Badge>
           </div>
-          <DialogTitle className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+          <DialogTitle className="text-center sm:text-center text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground w-full">
             Choose Your CryptoMind Plan
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground max-w-lg mx-auto">
+          <DialogDescription className="text-center sm:text-center text-sm text-muted-foreground max-w-lg mx-auto w-full">
             Supercharge your market edge with Google's most advanced reasoning AI model,{" "}
             <span className="font-semibold text-foreground">Gemini 3.8 Flash</span>.
           </DialogDescription>
@@ -226,7 +228,7 @@ export function UpgradeModal({
               {loadingPlan === "starter" ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Processing...</span>
+                  <span>Opening Checkout...</span>
                 </>
               ) : (
                 <>
@@ -322,7 +324,7 @@ export function UpgradeModal({
               {loadingPlan === "pro" ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Processing...</span>
+                  <span>Opening Checkout...</span>
                 </>
               ) : (
                 <>

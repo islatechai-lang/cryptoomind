@@ -335,15 +335,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/credits/checkout-config", async (req, res) => {
     try {
-      if (!isWhopEnabled || !whopSdk) {
-        return res.status(503).json({ error: "Whop integration not enabled" });
-      }
-
-      const user = await verifyWhopToken(req);
-      if (!user) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
-
       let planId = req.body.planId;
       if (!planId) {
         if (req.body.planType === "starter") {
@@ -353,6 +344,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } else {
           planId = process.env.WHOP_PLAN_ID || "plan_mndBT74OUdiNB";
         }
+      }
+
+      if (!isWhopEnabled || !whopSdk) {
+        console.warn("[Checkout Config] Whop integration not enabled, returning planId without checkoutConfigId");
+        return res.json({ checkoutConfigId: null, planId });
+      }
+
+      const user = await verifyWhopToken(req);
+      if (!user) {
+        console.warn("[Checkout Config] Unauthenticated user, returning planId without checkoutConfigId");
+        return res.json({ checkoutConfigId: null, planId });
       }
 
       console.log(`[Checkout Config] Creating checkout configuration for user ${user.userId} with plan ${planId}`);
