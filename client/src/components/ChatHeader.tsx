@@ -10,6 +10,7 @@ import { Link, useParams } from "wouter";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { MemberSidebar } from "./MemberSidebar";
+import { UpgradeModal } from "./UpgradeModal";
 
 interface ChatHeaderProps {
   onNewSession: () => void;
@@ -34,6 +35,7 @@ interface UserCredits {
 export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const { data: user } = useQuery<WhopUser | null>({
     queryKey: ["/api/auth/me"],
@@ -111,7 +113,7 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
         user={user}
         credits={credits}
         onSessionSelect={onSessionSelect}
-        onPurchase={() => purchaseMutation.mutate()}
+        onPurchase={() => setUpgradeModalOpen(true)}
         isPurchasing={purchaseMutation.isPending}
         subscriptionManageUrl={subscriptionData?.manageUrl}
       />
@@ -176,13 +178,12 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => purchaseMutation.mutate()}
-                  disabled={purchaseMutation.isPending}
-                  className="text-xs whitespace-nowrap px-2 md:px-3"
-                  data-testid="button-get-unlimited-header"
+                  onClick={() => setUpgradeModalOpen(true)}
+                  className="text-xs whitespace-nowrap px-2.5 md:px-3 gap-1 shadow-xs bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+                  data-testid="button-upgrade-header"
                 >
-                  <span className="hidden sm:inline">{purchaseMutation.isPending ? "Processing..." : "Get Unlimited"}</span>
-                  <span className="sm:hidden">{purchaseMutation.isPending ? "..." : "Unlimited"}</span>
+                  <SparklesIcon className="w-3.5 h-3.5" />
+                  <span>Upgrade</span>
                 </Button>
               )}
             </div>
@@ -199,6 +200,12 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
           </Button>
         </div>
       </div>
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onOpenChange={setUpgradeModalOpen}
+        experienceId={experienceId || user?.experienceId}
+        companyId={user?.companyId}
+      />
     </>
   );
 }

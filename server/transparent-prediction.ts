@@ -648,7 +648,7 @@ export async function generateTransparentPrediction(
   await delay(500);
 
   const aiStartTime = Date.now();
-  const thinkingModelLabel = "Gemini 3.1 Pro (Thinking Mode)";
+  const thinkingModelLabel = "Gemini 3.8 Flash (Thinking Mode)";
 
   sendStageUpdate(ws, {
     type: "analysis_stage",

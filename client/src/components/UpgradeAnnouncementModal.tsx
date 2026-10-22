@@ -80,7 +80,7 @@ export default function UpgradeAnnouncementModal() {
                         <DialogDescription className="text-center text-[13px] leading-relaxed text-muted-foreground max-w-[340px] mx-auto">
                             We've upgraded to{" "}
                             <span className="font-bold text-primary">
-                                Gemini 3.1 Pro
+                                Gemini 3.8 Flash
                             </span>{" "}
                             — Google's latest and most advanced reasoning model for sharper market insights.
                         </DialogDescription>
@@ -121,7 +121,7 @@ export default function UpgradeAnnouncementModal() {
                     </div>
 
                     <p className="relative text-center text-[10px] font-medium text-muted-foreground/50 mt-4">
-                        Powered by Gemini 3.1 Pro
+                        Powered by Gemini 3.8 Flash
                     </p>
                 </div>
             </DialogContent>

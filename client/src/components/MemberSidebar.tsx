@@ -154,10 +154,11 @@ export function MemberSidebar({ open, onOpenChange, user, credits, onSessionSele
                   variant="default"
                   onClick={onPurchase}
                   disabled={isPurchasing}
-                  className="w-full"
-                  data-testid="button-get-unlimited-sidebar"
+                  className="w-full gap-1.5 font-semibold"
+                  data-testid="button-upgrade-sidebar"
                 >
-                  {isPurchasing ? "Processing..." : "Get Unlimited"}
+                  <SparklesIcon className="w-4 h-4" />
+                  <span>{isPurchasing ? "Processing..." : "Upgrade"}</span>
                 </Button>
               )}
 

@@ -329,11 +329,11 @@ Based on this multi-timeframe technical analysis, provide your trading decision.
   };
 
   try {
-    console.log('\n🤖 Calling Gemini 3.1 Pro with THINKING mode (streaming)...');
-    const decision = await callGeminiModelStreaming("gemini-3.1-pro-preview", systemPrompt, analysisText, schema, true, ws);
+    console.log('\n🤖 Calling Gemini 3.8 Flash with THINKING mode (streaming)...');
+    const decision = await callGeminiModelStreaming("gemini-3.8-flash", systemPrompt, analysisText, schema, true, ws);
 
     if (decision) {
-      console.log(`✅ Gemini 3.1 Pro Decision: ${decision.direction} | ${decision.confidence}%`);
+      console.log(`✅ Gemini 3.8 Flash Decision: ${decision.direction} | ${decision.confidence}%`);
       console.log(`   Rationale: ${decision.rationale}`);
       if (decision.thinkingProcess) {
         console.log(`   🧠 Thinking captured (${decision.thinkingProcess.length} chars)`);
@@ -341,8 +341,25 @@ Based on this multi-timeframe technical analysis, provide your trading decision.
       return decision;
     }
   } catch (error: any) {
-    console.warn(`⚠️  Gemini 3.1 Pro failed: ${error.message}`);
-    console.log('🔄 Falling back to Gemini 2.5 Pro with THINKING mode...');
+    console.warn(`⚠️  Gemini 3.8 Flash failed: ${error.message}`);
+    console.log('🔄 Falling back to Gemini 3.1 Pro with THINKING mode...');
+
+    try {
+      const decision = await callGeminiModelStreaming("gemini-3.1-pro-preview", systemPrompt, analysisText, schema, true, ws);
+
+      if (decision) {
+        console.log(`✅ Gemini 3.1 Pro Decision: ${decision.direction} | ${decision.confidence}%`);
+        console.log(`   Rationale: ${decision.rationale}`);
+        if (decision.thinkingProcess) {
+          console.log(`   🧠 Thinking captured (${decision.thinkingProcess.length} chars)`);
+        }
+        return decision;
+      }
+    } catch (proError: any) {
+      console.warn(`⚠️  Gemini 3.1 Pro failed: ${proError.message}`);
+      console.log('🔄 Falling back to Gemini 2.5 Pro with THINKING mode...');
+    }
+  }
 
     try {
       const decision = await callGeminiModelStreaming("gemini-2.5-pro", systemPrompt, analysisText, schema, true, ws);

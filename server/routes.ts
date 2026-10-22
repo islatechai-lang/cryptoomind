@@ -344,12 +344,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      const planId = process.env.WHOP_PLAN_ID;
+      let planId = req.body.planId;
       if (!planId) {
-        return res.status(500).json({ error: "Plan ID not configured" });
+        if (req.body.planType === "starter") {
+          planId = "plan_ZLLdnJssCPIpY";
+        } else if (req.body.planType === "pro") {
+          planId = "plan_mndBT74OUdiNB";
+        } else {
+          planId = process.env.WHOP_PLAN_ID || "plan_mndBT74OUdiNB";
+        }
       }
 
-      console.log(`[Checkout Config] Creating checkout configuration for user ${user.userId}`);
+      console.log(`[Checkout Config] Creating checkout configuration for user ${user.userId} with plan ${planId}`);
 
       // Multi-tenant context resolution
       const { companyId: resolvedCompanyId, experienceId: resolvedExperienceId } = getResourceIdFromRequest(req, user);
@@ -396,7 +402,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         plan_id: planId,
         metadata: {
           user_id: user.userId,
-          subscription_type: "unlimited_access",
+          plan_id: planId,
+          plan_type: req.body.planType || (planId === "plan_ZLLdnJssCPIpY" ? "starter" : "pro"),
+          subscription_type: req.body.planType === "starter" ? "starter_plan" : "pro_plan",
           referring_admin_user_id: referringAdminUserId || "",
           referring_company_id: referringCompanyId || "",
         },
@@ -560,11 +568,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // ================================================================
-      // STEP 5: Grant unlimited access to customer
+      // STEP 5: Grant access to customer (Starter: 20 credits, Pro: Pro access)
       // ================================================================
+      const isStarter = payment.plan_id === "plan_ZLLdnJssCPIpY" || 
+                        payment.metadata?.plan_type === "starter" || 
+                        payment.metadata?.plan_id === "plan_ZLLdnJssCPIpY";
       try {
-        await storage.grantUnlimitedAccess(customerUserId);
-        console.log(`[Process Payment] ✅ Unlimited access granted to customer: ${customerEmail || customerUserId}`);
+        if (isStarter) {
+          await storage.incrementUserCredits(customerUserId, 20);
+          console.log(`[Process Payment] ✅ Granted 20 credits (Starter Plan) to: ${customerEmail || customerUserId}`);
+        } else {
+          await storage.grantUnlimitedAccess(customerUserId);
+          console.log(`[Process Payment] ✅ Pro access granted to customer: ${customerEmail || customerUserId}`);
+        }
       } catch (error) {
         console.error(`[Process Payment] ❌ Failed to grant unlimited access:`, error);
         return res.status(500).json({

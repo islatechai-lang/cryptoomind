@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { type Message, type TradingPair, type AnalysisStage, type Timeframe, type ChatSessionWithMessages } from "@shared/schema";
 import { ChatHeader } from "@/components/ChatHeader";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { ChatMessage } from "@/components/ChatMessage";
 import { PairSelector } from "@/components/PairSelector";
 import { TimeframeSelector } from "@/components/TimeframeSelector";
@@ -480,26 +481,11 @@ export default function Chat() {
         </div>
       </div>
 
-      <AlertDialog open={showPurchaseDialog} onOpenChange={setShowPurchaseDialog}>
-        <AlertDialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg" data-testid="dialog-purchase-credits">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Out of Credits</AlertDialogTitle>
-            <AlertDialogDescription>
-              You've used all your free analysis credits. Get unlimited access for $35/month to analyze as many crypto pairs as you want with no limits!
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-            <AlertDialogCancel data-testid="button-cancel-purchase">Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => purchaseMutation.mutate()}
-              disabled={purchaseMutation.isPending}
-              data-testid="button-confirm-purchase"
-            >
-              {purchaseMutation.isPending ? "Processing..." : "Get Unlimited Access"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <UpgradeModal 
+        open={showPurchaseDialog} 
+        onOpenChange={setShowPurchaseDialog} 
+        experienceId={experienceId} 
+      />
     </div>
   );
 }

@@ -1,12 +1,23 @@
 import { whopIframeSdk } from "./whop-iframe";
 
-export async function purchaseCredits(context?: { experienceId?: string; companyId?: string }): Promise<boolean> {
+export interface PurchaseOptions {
+  planId?: string;
+  planType?: "starter" | "pro";
+  experienceId?: string;
+  companyId?: string;
+}
+
+export async function purchaseCredits(options?: PurchaseOptions): Promise<boolean> {
   // Send notification email when user clicks the button
   try {
-    console.log("[Notification] Sending unlimited access clicked notification...");
+    console.log("[Notification] Sending upgrade clicked notification...");
     await fetch("/api/notifications/unlimited-access-clicked", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        planType: options?.planType || "pro",
+        planId: options?.planId,
+      }),
     });
   } catch (error) {
     console.error("[Notification] Failed to send notification:", error);
@@ -19,7 +30,11 @@ export async function purchaseCredits(context?: { experienceId?: string; company
     try {
       const response = await fetch("/api/credits/purchase", {
         method: "POST",
-        body: JSON.stringify({ success: true }),
+        body: JSON.stringify({
+          success: true,
+          planType: options?.planType || "pro",
+          planId: options?.planId,
+        }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -35,12 +50,17 @@ export async function purchaseCredits(context?: { experienceId?: string; company
   }
 
   try {
-    console.log("[Payment] Creating checkout configuration with context:", context);
+    console.log("[Payment] Creating checkout configuration with options:", options);
 
     const configResponse = await fetch("/api/credits/checkout-config", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(context || {}),
+      body: JSON.stringify({
+        planId: options?.planId,
+        planType: options?.planType,
+        experienceId: options?.experienceId,
+        companyId: options?.companyId,
+      }),
     });
 
     if (!configResponse.ok) {
@@ -77,13 +97,11 @@ export async function purchaseCredits(context?: { experienceId?: string; company
           const errorData = await processResponse.json();
           console.error("[Payment] Failed to process payment:", errorData);
 
-          // If it's a client error (4xx), the payment itself may be invalid
           if (processResponse.status >= 400 && processResponse.status < 500) {
             console.error("[Payment] ❌ Payment processing failed:", errorData.error);
             return false;
           }
 
-          // Server error (5xx) - payment was valid but processing failed
           console.error("[Payment] ❌ Server error processing payment:", errorData.error);
           return false;
         }
@@ -96,31 +114,18 @@ export async function purchaseCredits(context?: { experienceId?: string; company
           return false;
         }
 
-        if (processData.accessGranted) {
-          console.log("[Payment] ✅ Unlimited access granted!");
-        } else {
-          console.warn("[Payment] ⚠️  Access was not granted");
-        }
-
-        if (processData.commissionRecorded) {
-          console.log("[Payment] ✅ Admin commission recorded!");
-        } else {
-          console.log("[Payment] ℹ️  No commission recorded (no admin found)");
-        }
-
-        return processData.accessGranted;
-      } catch (error) {
-        console.error("[Payment] Error processing payment:", error);
-        // Network error or unexpected error
-        console.error("[Payment] ❌ Failed to process payment due to network error");
+        console.log("[Payment] ✅ Access granted successfully!");
+        return true;
+      } catch (processError) {
+        console.error("[Payment] ❌ Exception during payment processing:", processError);
         return false;
       }
     } else {
-      console.log("[Payment] Payment was not completed:", result.error);
+      console.log("[Payment] Modal closed without purchase or error:", result);
       return false;
     }
   } catch (error) {
-    console.error("[Payment] Error during payment:", error);
+    console.error("[Payment] ❌ Error during purchase flow:", error);
     return false;
   }
 }
