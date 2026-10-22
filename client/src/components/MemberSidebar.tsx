@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SparklesIcon } from "@heroicons/react/24/outline";
-import { MessageSquare, TrendingUp } from "lucide-react";
+import { MessageSquare, TrendingUp, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
@@ -40,9 +40,10 @@ interface MemberSidebarProps {
   onPurchase?: () => void;
   isPurchasing?: boolean;
   subscriptionManageUrl?: string | null;
+  isAdmin?: boolean;
 }
 
-export function MemberSidebar({ open, onOpenChange, user, credits, onSessionSelect, onPurchase, isPurchasing, subscriptionManageUrl }: MemberSidebarProps) {
+export function MemberSidebar({ open, onOpenChange, user, credits, onSessionSelect, onPurchase, isPurchasing, subscriptionManageUrl, isAdmin }: MemberSidebarProps) {
   const initials = user?.name
     ? user.name
       .split(" ")
@@ -172,6 +173,22 @@ export function MemberSidebar({ open, onOpenChange, user, credits, onSessionSele
                   Manage Subscription
                 </Button>
               )}
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className="pb-1">
+              <Link href="/admin">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2.5 text-xs font-semibold border-primary/30 hover:bg-primary/10 hover:text-primary transition-colors"
+                  onClick={() => onOpenChange(false)}
+                  data-testid="sidebar-button-admin"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-primary" />
+                  <span>Admin Dashboard</span>
+                </Button>
+              </Link>
             </div>
           )}
 

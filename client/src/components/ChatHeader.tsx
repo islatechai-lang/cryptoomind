@@ -7,7 +7,7 @@ import { purchaseCredits } from "@/lib/whop-payment";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useParams } from "wouter";
-import { Menu } from "lucide-react";
+import { Menu, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 import { MemberSidebar } from "./MemberSidebar";
 import { UpgradeModal } from "./UpgradeModal";
@@ -37,6 +37,9 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
+  const params = useParams<{ experienceId?: string }>();
+  const experienceId = params.experienceId;
+
   const { data: user } = useQuery<WhopUser | null>({
     queryKey: ["/api/auth/me"],
   });
@@ -52,9 +55,9 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
   });
 
   const { data: adminCheck } = useQuery<{ isAdmin: boolean }>({
-    queryKey: ["/api/admin/check", user?.companyId, user?.experienceId],
+    queryKey: ["/api/admin/check", user?.companyId, user?.experienceId, experienceId],
     queryFn: async () => {
-      const resourceId = user?.companyId || user?.experienceId;
+      const resourceId = user?.companyId || user?.experienceId || experienceId;
       if (!resourceId) return { isAdmin: false };
       const res = await fetch("/api/admin/check", {
         method: "POST",
@@ -64,11 +67,9 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
       });
       return res.ok ? res.json() : { isAdmin: false };
     },
-    enabled: !!user && (!!user.companyId || !!user.experienceId),
+    enabled: !!user && (!!user.companyId || !!user.experienceId || !!experienceId),
   });
 
-  const params = useParams<{ experienceId?: string }>();
-  const experienceId = params.experienceId;
 
   const purchaseMutation = useMutation({
     mutationFn: async () => {
@@ -115,6 +116,7 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
         onSessionSelect={onSessionSelect}
         onPurchase={() => setUpgradeModalOpen(true)}
         isPurchasing={purchaseMutation.isPending}
+        isAdmin={adminCheck?.isAdmin}
         subscriptionManageUrl={subscriptionData?.manageUrl}
       />
       <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-6 px-3 md:px-6 lg:px-12 xl:px-24 py-3 md:py-4 w-full backdrop-blur-md" data-testid="chat-header">
@@ -159,9 +161,10 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs whitespace-nowrap px-2 md:px-3"
+                className="text-xs whitespace-nowrap px-2 md:px-3 gap-1.5 border-primary/30 hover:bg-primary/10 hover:text-primary font-medium"
                 data-testid="button-admin-dashboard"
               >
+                <LayoutDashboard className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                 <span className="hidden sm:inline">Admin Dashboard</span>
                 <span className="sm:hidden">Admin</span>
               </Button>

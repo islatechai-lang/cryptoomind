@@ -99,10 +99,11 @@ export function UpgradeModal({
         </DialogHeader>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          {/* 1. FREE PLAN */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-4 pt-3">
+          {/* 1. FREE PLAN - order-1 on both mobile and desktop */}
           <div
             className="
+              order-1 md:order-1
               relative flex flex-col justify-between p-5 rounded-xl border border-border/70 bg-card
               hover:border-border transition-colors
             "
@@ -134,6 +135,12 @@ export function UpgradeModal({
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground/90 font-medium">
+                      Standard Google Gemini 3.1 model
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Standard technical indicators (RSI, MACD)</span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -158,9 +165,10 @@ export function UpgradeModal({
             </Button>
           </div>
 
-          {/* 2. STARTER PLAN ($10 / month, 20 analyses / month) */}
+          {/* 2. STARTER PLAN ($10 / month) - order-3 on mobile (bottom), order-2 on desktop (middle) */}
           <div
             className="
+              order-3 md:order-2
               relative flex flex-col justify-between p-5 rounded-xl border border-border/90 bg-card
               hover:border-primary/50 transition-colors shadow-xs
             "
@@ -198,8 +206,8 @@ export function UpgradeModal({
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground/90 font-medium">
-                      Powered by Google Gemini 3.8 Flash
+                    <span className="text-primary font-semibold">
+                      Google Gemini 3.8 Flash (Advanced Reasoning)
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -239,9 +247,10 @@ export function UpgradeModal({
             </Button>
           </div>
 
-          {/* 3. PRO PLAN ($5 / week, 10 analyses / week, 3-day trial) */}
+          {/* 3. PRO PLAN ($5 / week, 3-day trial) - order-2 on mobile (IN THE MIDDLE), order-3 on desktop */}
           <div
             className="
+              order-2 md:order-3
               relative flex flex-col justify-between p-5 rounded-xl
               border-2 border-primary bg-primary/5 dark:bg-primary/[0.07]
               shadow-md
@@ -294,7 +303,7 @@ export function UpgradeModal({
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground/90 font-medium">
+                    <span className="text-primary font-bold">
                       Google Gemini 3.8 Flash (Deep Reasoning)
                     </span>
                   </li>

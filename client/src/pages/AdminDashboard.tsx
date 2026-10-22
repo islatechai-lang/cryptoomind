@@ -261,14 +261,9 @@ export default function AdminDashboard() {
                 data-testid="link-act-as-member"
               >
                 <User className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Act as a Member</span>
-                <span className="sm:hidden">Member</span>
+                <span>Act as a Member</span>
               </Button>
             </Link>
-            <Badge variant="outline" className="text-xs gap-1 border-primary/30 bg-primary/10 text-primary px-2.5 py-1 font-semibold dark:bg-primary/20">
-              <Sparkles className="w-3 h-3" />
-              <span className="hidden sm:inline font-semibold">Admin</span>
-            </Badge>
           </div>
         </div>
       </header>
