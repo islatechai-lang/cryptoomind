@@ -5,45 +5,68 @@ import { pgTable, varchar, integer, timestamp } from "drizzle-orm/pg-core";
 export const cryptoPairs = [
   "BTC/USDT",
   "ETH/USDT",
+  "SOL/USDT",
   "XRP/USDT",
   "BNB/USDT",
-  "SOL/USDT",
-  "TRX/USDT",
   "DOGE/USDT",
   "ADA/USDT",
-  "LINK/USDT",
-  "LTC/USDT",
-  "HBAR/USDT",
-  "AVAX/USDT",
   "SUI/USDT",
-  "SHIB/USDT",
-  "UNI/USDT",
-  "DOT/USDT",
-  "AAVE/USDT",
+  "AVAX/USDT",
+  "LINK/USDT",
+  "NEAR/USDT",
+  "APT/USDT",
+  "TAO/USDT",
+  "RENDER/USDT",
+  "FET/USDT",
   "PEPE/USDT",
+  "SHIB/USDT",
+  "WIF/USDT",
+  "BONK/USDT",
+  "FLOKI/USDT",
+  "INJ/USDT",
+  "SEI/USDT",
+  "TIA/USDT",
+  "ARB/USDT",
+  "OP/USDT",
+  "DOT/USDT",
+  "UNI/USDT",
+  "AAVE/USDT",
+  "LTC/USDT",
+  "TRX/USDT",
   "XLM/USDT",
+  "HBAR/USDT",
+  "KAS/USDT",
+  "ICP/USDT",
+  "POL/USDT",
+  "TON/USDT",
   "ONDO/USDT",
   "ALGO/USDT",
 ] as const;
 
-// Note: Only forex pairs supported by Binance spot trading are included
-// Binance offers these as EURUSDT, GBPUSDT, and AUDUSDT
 export const forexPairs = [
+  // Precious Metals
+  "XAU/USD", // Gold
+  "XAG/USD", // Silver
+  "XPT/USD", // Platinum
+  "XPD/USD", // Palladium
+
+  // Major & High-Volume Forex Pairs
   "EUR/USD",
   "GBP/USD",
+  "USD/JPY",
   "AUD/USD",
+  "USD/CAD",
+  "USD/CHF",
+  "NZD/USD",
+  "EUR/GBP",
+  "EUR/JPY",
+  "GBP/JPY",
 ] as const;
 
+export const commoditiesPairs = [] as const;
+export const indicesPairs = [] as const;
 
-export const commoditiesPairs = [
-  "XAU/USD",
-] as const;
-
-export const indicesPairs = [
-  "US100/USD",
-] as const;
-
-export const tradingPairs = [...cryptoPairs, ...forexPairs, ...commoditiesPairs, ...indicesPairs] as const;
+export const tradingPairs = [...cryptoPairs, ...forexPairs] as const;
 
 export const timeframes = [
   "M1",
@@ -252,7 +275,7 @@ export type SignalAggregationData = z.infer<typeof signalAggregationDataSchema>;
 export type AIThinkingData = z.infer<typeof aiThinkingDataSchema>;
 export type TradeTargets = z.infer<typeof tradeTargetsSchema>;
 export type FinalVerdictData = z.infer<typeof finalVerdictDataSchema>;
-export type TradingPair = typeof tradingPairs[number];
+export type TradingPair = typeof tradingPairs[number] | (string & {});
 export type CryptoPair = typeof cryptoPairs[number];
 export type ForexPair = typeof forexPairs[number];
 export type Timeframe = typeof timeframes[number];

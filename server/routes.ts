@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { generatePrediction } from "./prediction";
 import { generateTransparentPrediction } from "./transparent-prediction";
+import { validateMarketPair } from "./crypto-data";
 import { type TradingPair, tradingPairs, messageSchema, MembershipStatus } from "@shared/schema";
 import { verifyWhopToken, checkExperienceAccess, checkCompanyAccess, getResourceIdFromRequest, resolveCompanyIdFromExperience, checkIfUserIsOwner } from "./lib/auth";
 import { isWhopEnabled, whopSdk } from "./lib/whop-sdk";
@@ -69,6 +70,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     return res.json({ user });
+  });
+
+  app.post("/api/market/validate-pair", async (req, res) => {
+    try {
+      const { pair } = req.body;
+      if (!pair || typeof pair !== "string") {
+        return res.status(400).json({ valid: false, error: "Pair is required" });
+      }
+      const result = await validateMarketPair(pair);
+      return res.json(result);
+    } catch (error: any) {
+      console.error("[Validate Pair] Error:", error);
+      return res.status(500).json({ valid: false, error: error?.message || "Validation failed" });
+    }
   });
 
   app.get("/api/auth/me", async (req, res) => {

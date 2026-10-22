@@ -137,11 +137,14 @@ const timeframeToTradingViewInterval: Record<Timeframe, string> = {
   W1: "W",
 };
 
-function toTradingViewSymbol(pair?: TradingPair): string {
+function toTradingViewSymbol(pair?: TradingPair | string): string {
   if (!pair) return "BINANCE:BTCUSDT";
 
   // Special cases for non-crypto pairs
   if (pair === "XAU/USD") return "OANDA:XAUUSD";
+  if (pair === "XAG/USD") return "OANDA:XAGUSD";
+  if (pair === "XPT/USD") return "OANDA:XPTUSD";
+  if (pair === "XPD/USD") return "OANDA:XPDUSD";
   if (pair === "US100/USD") return "NASDAQ:NDX";
 
   const [base, quote] = pair.split("/");
@@ -151,7 +154,7 @@ function toTradingViewSymbol(pair?: TradingPair): string {
     return `BINANCE:${base}${quote}`;
   }
 
-  if (quote === "USD") {
+  if (["USD", "JPY", "GBP", "EUR", "CAD", "CHF", "AUD", "NZD"].includes(quote)) {
     return `FX:${base}${quote}`;
   }
 

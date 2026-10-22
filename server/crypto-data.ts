@@ -19,8 +19,76 @@ interface MarketData {
   volumeChange24h: number;
 }
 
+export const YAHOO_SYMBOLS: Record<string, string> = {
+  "XAU/USD": "GC=F",
+  "XAG/USD": "SI=F",
+  "XPT/USD": "PL=F",
+  "XPD/USD": "PA=F",
+  "EUR/USD": "EURUSD=X",
+  "GBP/USD": "GBPUSD=X",
+  "USD/JPY": "USDJPY=X",
+  "AUD/USD": "AUDUSD=X",
+  "USD/CAD": "USDCAD=X",
+  "USD/CHF": "USDCHF=X",
+  "NZD/USD": "NZDUSD=X",
+  "EUR/GBP": "EURGBP=X",
+  "EUR/JPY": "EURJPY=X",
+  "GBP/JPY": "GBPJPY=X",
+};
+
+const binanceIntervalMap: Record<string, string> = {
+  "M1": "1m", "M3": "3m", "M5": "5m", "M15": "15m", "M30": "30m",
+  "M45": "15m", "H1": "1h", "H2": "2h", "H3": "1h", "H4": "4h",
+  "D1": "1d", "W1": "1w"
+};
+
+async function fetchFromBinance(pair: string, timeframe: string): Promise<MarketData | null> {
+  try {
+    const formatted = pair.replace("/", "").toUpperCase();
+    const interval = binanceIntervalMap[timeframe] || "15m";
+
+    const tickerUrl = `https://api.binance.com/api/v3/ticker/24hr?symbol=${formatted}`;
+    const tickerRes = await fetch(tickerUrl, { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (!tickerRes.ok) return null;
+    const tickerData: any = await tickerRes.json();
+    const currentPrice = parseFloat(tickerData.lastPrice);
+    const priceChange24h = parseFloat(tickerData.priceChangePercent);
+
+    if (isNaN(currentPrice) || currentPrice <= 0) return null;
+
+    const klinesUrl = `https://api.binance.com/api/v3/klines?symbol=${formatted}&interval=${interval}&limit=100`;
+    const klinesRes = await fetch(klinesUrl, { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (!klinesRes.ok) return null;
+    const klinesData: any = await klinesRes.json();
+
+    if (!Array.isArray(klinesData) || klinesData.length === 0) return null;
+
+    const candles: Candle[] = klinesData.map((k: any) => ({
+      timestamp: k[0],
+      open: parseFloat(k[1]),
+      high: parseFloat(k[2]),
+      low: parseFloat(k[3]),
+      close: parseFloat(k[4]),
+      volume: parseFloat(k[7]) || parseFloat(k[5]) || 0,
+    }));
+
+    const avgVolume = candles.reduce((sum, c) => sum + c.volume, 0) / candles.length;
+    const recentVolume = candles.slice(-10).reduce((sum, c) => sum + c.volume, 0) / 10;
+    const volumeChange24h = avgVolume > 0 ? ((recentVolume / avgVolume - 1) * 100) : 0;
+
+    return {
+      currentPrice,
+      candles,
+      priceChange24h: isNaN(priceChange24h) ? 0 : priceChange24h,
+      volumeChange24h: isNaN(volumeChange24h) ? 0 : volumeChange24h,
+    };
+  } catch (err) {
+    return null;
+  }
+}
+
 // Map trading pairs to CryptoCompare symbols
-const pairToSymbols = (pair: TradingPair): { from: string; to: string } => {
+const pairToSymbols = (pair: TradingPair | string): { from: string; to: string } => {
   const mapping: Record<string, { from: string; to: string }> = {
     "BTC/USDT": { from: "BTC", to: "USDT" },
     "ETH/USDT": { from: "ETH", to: "USDT" },
@@ -31,14 +99,11 @@ const pairToSymbols = (pair: TradingPair): { from: string; to: string } => {
     "DOGE/USDT": { from: "DOGE", to: "USDT" },
     "ADA/USDT": { from: "ADA", to: "USDT" },
     "LINK/USDT": { from: "LINK", to: "USDT" },
-    "HYPE/USDT": { from: "HYPE", to: "USDT" },
-    "XMR/USDT": { from: "XMR", to: "USDT" },
     "LTC/USDT": { from: "LTC", to: "USDT" },
     "HBAR/USDT": { from: "HBAR", to: "USDT" },
     "AVAX/USDT": { from: "AVAX", to: "USDT" },
     "SUI/USDT": { from: "SUI", to: "USDT" },
     "SHIB/USDT": { from: "SHIB", to: "USDT" },
-    "WLFI/USDT": { from: "WLFI", to: "USDT" },
     "UNI/USDT": { from: "UNI", to: "USDT" },
     "DOT/USDT": { from: "DOT", to: "USDT" },
     "AAVE/USDT": { from: "AAVE", to: "USDT" },
@@ -49,15 +114,29 @@ const pairToSymbols = (pair: TradingPair): { from: string; to: string } => {
     "EUR/USD": { from: "EUR", to: "USD" },
     "GBP/USD": { from: "GBP", to: "USD" },
     "AUD/USD": { from: "AUD", to: "USD" },
-    "XAU/USD": { from: "PAXG", to: "USDT" }, // Use PAXG crypto token as 24/7 live gold proxy
-    "US100/USD": { from: "US100", to: "USD" },
+    "USD/JPY": { from: "USD", to: "JPY" },
+    "USD/CAD": { from: "USD", to: "CAD" },
+    "USD/CHF": { from: "USD", to: "CHF" },
+    "NZD/USD": { from: "NZD", to: "USD" },
+    "EUR/GBP": { from: "EUR", to: "GBP" },
+    "EUR/JPY": { from: "EUR", to: "JPY" },
+    "GBP/JPY": { from: "GBP", to: "JPY" },
+    "XAU/USD": { from: "PAXG", to: "USDT" },
+    "XAG/USD": { from: "XAG", to: "USD" },
+    "XPT/USD": { from: "XPT", to: "USD" },
+    "XPD/USD": { from: "XPD", to: "USD" },
   };
 
   if (pair in mapping) {
     return mapping[pair];
   }
 
-  throw new Error(`Trading pair ${pair} is not supported`);
+  const parts = pair.split("/");
+  if (parts.length === 2 && parts[0] && parts[1]) {
+    return { from: parts[0].toUpperCase(), to: parts[1].toUpperCase() };
+  }
+
+  return { from: pair.toUpperCase(), to: "USDT" };
 };
 
 const fetchHeaders: HeadersInit = {
@@ -158,38 +237,35 @@ const convertYahooCandles = (result: any): Candle[] => {
   })).filter((c: Candle) => c.open !== 0);
 };
 
-export async function fetchMarketData(pair: TradingPair, timeframe: string = "M1"): Promise<MarketData> {
+export async function fetchMarketData(pair: TradingPair | string, timeframe: string = "M1"): Promise<MarketData> {
   const { from, to } = pairToSymbols(pair);
 
-  // Use Yahoo Finance for US100/USD (XAU/USD handles via PAXG proxy in CryptoCompare block)
-  if (pair === "US100/USD") {
+  // 1. Check Yahoo Finance for Metals and Forex pairs
+  const yfSymbol = YAHOO_SYMBOLS[pair] || (pair === "US100/USD" ? "NQ=F" : null);
+  if (yfSymbol) {
     try {
-      const yfSymbol = "NQ=F";
+      const yahooTimeframeMap: Record<string, string> = {
+        "M1": "1m", "M3": "2m", "M5": "5m", "M15": "15m", "M30": "30m",
+        "H1": "1h", "H2": "1h", "H4": "1h", "D1": "1d", "W1": "1wk"
+      };
 
-      if (yfSymbol) {
-        // Yahoo timeframe mapping
-        const yahooTimeframeMap: Record<string, string> = {
-          "M1": "1m", "M3": "2m", "M5": "5m", "M15": "15m", "M30": "30m",
-          "H1": "1h", "H2": "1h", "H4": "1h", "D1": "1d", "W1": "1wk"
-        };
+      const interval = yahooTimeframeMap[timeframe] || "15m";
+      const rangeMap: Record<string, string> = {
+        "M1": "1d", "M5": "1d", "M15": "5d", "H1": "1mo", "D1": "1y", "W1": "5y"
+      };
+      const range = rangeMap[timeframe] || "5d";
 
-        const interval = yahooTimeframeMap[timeframe] || "15m";
-        const rangeMap: Record<string, string> = {
-          "M1": "1d", "M5": "1d", "M15": "5d", "H1": "1mo", "D1": "1y", "W1": "5y"
-        };
-        const range = rangeMap[timeframe] || "5d";
+      const data = await fetchFromYahoo(yfSymbol, interval, range);
+      const result = data?.chart?.result?.[0];
 
-        const data = await fetchFromYahoo(yfSymbol, interval, range);
-        const result = data?.chart?.result?.[0];
+      if (result) {
+        const currentPrice = result.meta.regularMarketPrice;
+        const previousClose = result.meta.previousClose || currentPrice;
+        const priceChange24h = ((currentPrice - previousClose) / previousClose) * 100;
+        const candles = convertYahooCandles(result);
 
-        if (result) {
-          const currentPrice = result.meta.regularMarketPrice;
-          const previousClose = result.meta.previousClose || currentPrice;
-          const priceChange24h = ((currentPrice - previousClose) / previousClose) * 100;
-          const candles = convertYahooCandles(result);
-
-          console.log(`[Yahoo API] Successfully fetched ${pair}: $${currentPrice}`);
-
+        if (candles.length > 0) {
+          console.log(`[Yahoo API] Successfully fetched ${pair}: ${currentPrice}`);
           return {
             currentPrice,
             candles,
@@ -199,9 +275,15 @@ export async function fetchMarketData(pair: TradingPair, timeframe: string = "M1
         }
       }
     } catch (error) {
-      console.error(`[Yahoo API] Custom fetch error for ${pair}:`, error);
-      // Fallback
+      console.warn(`[Yahoo API] Error fetching ${pair}:`, error);
     }
+  }
+
+  // 2. Check Binance for live Crypto data
+  const binanceData = await fetchFromBinance(pair, timeframe);
+  if (binanceData) {
+    console.log(`[Binance API] Successfully fetched live data for ${pair}: ${binanceData.currentPrice}`);
+    return binanceData;
   }
 
   try {
@@ -480,4 +562,80 @@ export function getAnchorTimeframes(entryTimeframe: string): { primary: string; 
 
   // Default fallback
   return { primary: "H4", secondary: "D1" };
+}
+
+export function normalizePairFormat(input: string): string {
+  let clean = input.trim().toUpperCase().replace(/[^A-Z0-9/]/g, "");
+  if (!clean.includes("/")) {
+    if (clean.endsWith("USDT")) {
+      clean = clean.replace(/USDT$/, "/USDT");
+    } else if (clean.endsWith("USD")) {
+      clean = clean.replace(/USD$/, "/USD");
+    } else if (clean.endsWith("JPY")) {
+      clean = clean.replace(/JPY$/, "/JPY");
+    } else if (clean.endsWith("BTC")) {
+      clean = clean.replace(/BTC$/, "/BTC");
+    } else {
+      clean = `${clean}/USDT`;
+    }
+  }
+  return clean;
+}
+
+export async function validateMarketPair(pairInput: string): Promise<{
+  valid: boolean;
+  pair: string;
+  currentPrice?: number;
+  category?: "crypto" | "forex";
+  error?: string;
+}> {
+  const pair = normalizePairFormat(pairInput);
+  const isForex = pair.endsWith("/USD") || pair.endsWith("/JPY") || pair.endsWith("/GBP") || pair.endsWith("/EUR") || pair.startsWith("XAU") || pair.startsWith("XAG") || pair.startsWith("XPT") || pair.startsWith("XPD");
+
+  // 1. Check Yahoo symbols
+  if (YAHOO_SYMBOLS[pair]) {
+    try {
+      const data = await fetchFromYahoo(YAHOO_SYMBOLS[pair], "15m", "1d");
+      const currentPrice = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      if (currentPrice && currentPrice > 0) {
+        return { valid: true, pair, currentPrice, category: "forex" };
+      }
+    } catch {}
+  }
+
+  // 2. Check Binance
+  try {
+    const sym = pair.replace("/", "").toUpperCase();
+    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`, {
+      headers: { "User-Agent": "Mozilla/5.0" }
+    });
+    if (res.ok) {
+      const data: any = await res.json();
+      const currentPrice = parseFloat(data.price);
+      if (currentPrice && currentPrice > 0) {
+        return { valid: true, pair, currentPrice, category: isForex ? "forex" : "crypto" };
+      }
+    }
+  } catch {}
+
+  // 3. Check CryptoCompare
+  try {
+    const { from, to } = pairToSymbols(pair);
+    const res = await fetch(`${CRYPTOCOMPARE_API_BASE}/price?fsym=${from}&tsyms=${to}`, {
+      headers: fetchHeaders
+    });
+    if (res.ok) {
+      const data: any = await res.json();
+      const currentPrice = data[to];
+      if (currentPrice && currentPrice > 0) {
+        return { valid: true, pair, currentPrice, category: isForex ? "forex" : "crypto" };
+      }
+    }
+  } catch {}
+
+  return {
+    valid: false,
+    pair,
+    error: `Could not verify market data for ${pair}. Please verify the symbol and try again.`
+  };
 }
