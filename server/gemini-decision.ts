@@ -358,38 +358,37 @@ Based on this multi-timeframe technical analysis, provide your trading decision.
     } catch (proError: any) {
       console.warn(`⚠️  Gemini 3.1 Pro failed: ${proError.message}`);
       console.log('🔄 Falling back to Gemini 2.5 Pro with THINKING mode...');
-    }
-  }
-
-    try {
-      const decision = await callGeminiModelStreaming("gemini-2.5-pro", systemPrompt, analysisText, schema, true, ws);
-
-      if (decision) {
-        console.log(`✅ Gemini 2.5 Pro Decision: ${decision.direction} | ${decision.confidence}%`);
-        console.log(`   Rationale: ${decision.rationale}`);
-        if (decision.thinkingProcess) {
-          console.log(`   🧠 Thinking captured (${decision.thinkingProcess.length} chars)`);
-        }
-        return decision;
-      }
-    } catch (fallbackError: any) {
-      console.warn(`⚠️  Gemini 2.5 Pro failed: ${fallbackError.message}`);
-      console.log('🔄 Falling back to Gemini Flash Latest with THINKING mode...');
 
       try {
-        const decision = await callGeminiModelStreaming("gemini-flash-latest", systemPrompt, analysisText, schema, true, ws);
+        const decision = await callGeminiModelStreaming("gemini-2.5-pro", systemPrompt, analysisText, schema, true, ws);
 
         if (decision) {
-          console.log(`✅ Gemini Flash Latest Decision: ${decision.direction} | ${decision.confidence}%`);
+          console.log(`✅ Gemini 2.5 Pro Decision: ${decision.direction} | ${decision.confidence}%`);
           console.log(`   Rationale: ${decision.rationale}`);
           if (decision.thinkingProcess) {
             console.log(`   🧠 Thinking captured (${decision.thinkingProcess.length} chars)`);
           }
           return decision;
         }
-      } catch (finalFallbackError: any) {
-        console.error(`❌ All Gemini models failed: ${finalFallbackError.message}`);
-        return null;
+      } catch (fallbackError: any) {
+        console.warn(`⚠️  Gemini 2.5 Pro failed: ${fallbackError.message}`);
+        console.log('🔄 Falling back to Gemini Flash Latest with THINKING mode...');
+
+        try {
+          const decision = await callGeminiModelStreaming("gemini-flash-latest", systemPrompt, analysisText, schema, true, ws);
+
+          if (decision) {
+            console.log(`✅ Gemini Flash Latest Decision: ${decision.direction} | ${decision.confidence}%`);
+            console.log(`   Rationale: ${decision.rationale}`);
+            if (decision.thinkingProcess) {
+              console.log(`   🧠 Thinking captured (${decision.thinkingProcess.length} chars)`);
+            }
+            return decision;
+          }
+        } catch (finalFallbackError: any) {
+          console.error(`❌ All Gemini models failed: ${finalFallbackError.message}`);
+          return null;
+        }
       }
     }
   }
