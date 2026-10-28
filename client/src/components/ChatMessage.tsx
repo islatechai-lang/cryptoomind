@@ -17,14 +17,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
     >
       {isBot && (
         <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center overflow-hidden">
-          <img src={logo} alt="CryptoMind AI" className="w-full h-full object-contain" />
+          <img src={logo} alt="TradeMind AI" className="w-full h-full object-contain" />
         </div>
       )}
       
       <div className={`flex flex-col gap-1 ${isBot ? "max-w-[85%] sm:max-w-[75%] lg:max-w-[70%]" : "max-w-[90%] sm:max-w-[85%] lg:max-w-[75%]"}`}>
         {isBot && (
           <div className="text-xs font-semibold uppercase text-primary">
-            CryptoMind AI
+            TradeMind AI
           </div>
         )}
         

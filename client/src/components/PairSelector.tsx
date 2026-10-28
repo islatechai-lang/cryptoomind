@@ -25,7 +25,7 @@ interface PairSelectorProps {
   selectedPair?: TradingPair;
 }
 
-const CUSTOM_PAIRS_STORAGE_KEY = "cryptomind_custom_pairs_v1";
+const CUSTOM_PAIRS_STORAGE_KEY = "trademind_custom_pairs_v1";
 
 const PAIR_LABELS: Record<string, string> = {
   "XAU/USD": "Gold",
@@ -64,7 +64,7 @@ export function PairSelector({ onSelectPair, selectedPair }: PairSelectorProps) 
   // Load saved custom pairs from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(CUSTOM_PAIRS_STORAGE_KEY);
+      const stored = localStorage.getItem(CUSTOM_PAIRS_STORAGE_KEY) || localStorage.getItem("cryptomind_custom_pairs_v1");
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {

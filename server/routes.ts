@@ -1076,16 +1076,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           first: 200,
           statuses: ["active", "trialing", "completed"]
         })) {
-          // Only include CryptoMind AI product memberships
+          // Only include TradeMind AI product memberships
           const productTitle = membership.product?.title || "";
-          const isCryptoMindProduct = productTitle.toLowerCase().includes("cryptomind");
+          const isTradeMindProduct = productTitle.toLowerCase().includes("trademind") || productTitle.toLowerCase().includes("cryptomind");
 
-          if (!membership.canceled_at && isCryptoMindProduct) {
+          if (!membership.canceled_at && isTradeMindProduct) {
             allMemberships.push(membership);
           }
         }
 
-        console.log(`[Whop] Found ${allMemberships.length} total active CryptoMind AI memberships in owner's company`);
+        console.log(`[Whop] Found ${allMemberships.length} total active TradeMind AI memberships in owner's company`);
 
         // STEP 3: Filter to only memberships that belong to THIS admin's stored members
         const memberships = allMemberships.filter(m =>
@@ -1222,9 +1222,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const allMembers = await storage.getStoredMembersByAdmin(user.userId, statuses);
 
-      // Filter to only show CryptoMind AI product members
+      // Filter to only show TradeMind AI product members
       const members = allMembers.filter(m =>
-        m.productTitle?.toLowerCase().includes("cryptomind")
+        (m.productTitle?.toLowerCase().includes("trademind") || m.productTitle?.toLowerCase().includes("cryptomind"))
       );
 
       return res.json({
@@ -2388,7 +2388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Send welcome message
     const welcomeMsg: ServerMessage = {
       type: "bot_message",
-      content: "Welcome to CryptoMind AI! I provide real-time crypto and forex predictions powered by AI analysis. Simply pick a trading pair below to get started.",
+      content: "Welcome to TradeMind AI! I provide real-time crypto and forex predictions powered by AI analysis. Simply pick a trading pair below to get started.",
     };
     ws.send(JSON.stringify(welcomeMsg));
   }

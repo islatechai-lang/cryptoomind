@@ -205,7 +205,7 @@ export function MemberSidebar({ open, onOpenChange, user, credits, onSessionSele
             </Avatar>
             <div className="flex flex-col gap-0.5 flex-1 min-w-0">
               <p className="font-semibold text-sm truncate" data-testid="sidebar-text-username">
-                {user?.name || "CryptoMind AI User"}
+                {user?.name || "TradeMind AI User"}
               </p>
               {user?.username && (
                 <p className="text-xs text-muted-foreground truncate" data-testid="sidebar-text-handle">

@@ -28,7 +28,7 @@ export default function Privacy() {
                 <section className="space-y-4">
                     <h2 className="text-2xl font-semibold">2. How We Use Data</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                        Your data is used solely to provide the services of CryptoMind AI. This includes managing your analysis history, calculating credits, and improving the accuracy of our AI models.
+                        Your data is used solely to provide the services of TradeMind AI. This includes managing your analysis history, calculating credits, and improving the accuracy of our AI models.
                     </p>
                 </section>
 
@@ -56,7 +56,7 @@ export default function Privacy() {
                 <Separator className="my-8" />
 
                 <p className="text-sm text-muted-foreground text-center">
-                    &copy; 2026 CryptoMind AI. All rights reserved.
+                    &copy; 2026 TradeMind AI. All rights reserved.
                 </p>
             </div>
         </div>

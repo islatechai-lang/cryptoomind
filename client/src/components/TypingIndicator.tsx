@@ -4,12 +4,12 @@ export function TypingIndicator() {
   return (
     <div className="flex gap-3 justify-start" data-testid="typing-indicator">
       <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
-        <img src={logo} alt="CryptoMind AI" className="w-full h-full object-contain" />
+        <img src={logo} alt="TradeMind AI" className="w-full h-full object-contain" />
       </div>
       
       <div className="flex flex-col gap-1">
         <div className="text-xs font-semibold uppercase text-primary">
-          CryptoMind AI
+          TradeMind AI
         </div>
         
         <div className="bg-card border border-card-border rounded-lg p-3">

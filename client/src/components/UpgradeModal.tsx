@@ -90,7 +90,7 @@ export function UpgradeModal({
             </Badge>
           </div>
           <DialogTitle className="text-center sm:text-center text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground w-full">
-            Choose Your CryptoMind Plan
+            Choose Your TradeMind Plan
           </DialogTitle>
           <DialogDescription className="text-center sm:text-center text-sm text-muted-foreground max-w-lg mx-auto w-full">
             Supercharge your market edge with Google's most advanced reasoning AI model,{" "}

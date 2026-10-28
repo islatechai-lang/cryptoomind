@@ -48,7 +48,7 @@ export async function sendWithdrawalRequestNotification(data: WithdrawalRequestD
     const { data: emailData, error } = await resend.emails.send({
       from: fromEmail,
       to: notificationEmail,
-      subject: '💰 New Withdrawal Request - CryptoMind AI Admin',
+      subject: '💰 New Withdrawal Request - TradeMind AI Admin',
       html: `
         <!DOCTYPE html>
         <html>
@@ -115,7 +115,7 @@ export async function sendWithdrawalRequestNotification(data: WithdrawalRequestD
               </div>
               
               <div class="footer">
-                <p>CryptoMind AI - AI-Powered Crypto Predictions</p>
+                <p>TradeMind AI - AI-Powered Crypto Predictions</p>
               </div>
             </div>
           </body>
@@ -148,7 +148,7 @@ export async function sendUnlimitedAccessClickedNotification(data: UnlimitedAcce
     const { data: emailData, error } = await resend.emails.send({
       from: fromEmail,
       to: notificationEmail,
-      subject: '🎯 New User Clicked "Get Unlimited Access" - CryptoMind AI',
+      subject: '🎯 New User Clicked "Get Unlimited Access" - TradeMind AI',
       html: `
         <!DOCTYPE html>
         <html>
@@ -174,7 +174,7 @@ export async function sendUnlimitedAccessClickedNotification(data: UnlimitedAcce
                 <p style="margin: 10px 0 0 0; opacity: 0.9;">Someone clicked "Get Unlimited Access"</p>
               </div>
               <div class="content">
-                <p>A user just expressed interest in upgrading to unlimited access on CryptoMind AI!</p>
+                <p>A user just expressed interest in upgrading to unlimited access on TradeMind AI!</p>
                 
                 <div class="info-box">
                   <h3 style="margin-top: 0; color: #667eea;">User Details</h3>
@@ -199,12 +199,12 @@ export async function sendUnlimitedAccessClickedNotification(data: UnlimitedAcce
                 </div>
 
                 <p style="color: #6b7280; font-size: 14px; margin-top: 20px;">
-                  This notification is sent automatically when users click the "Get Unlimited Access" button in your CryptoMind AI app.
+                  This notification is sent automatically when users click the "Get Unlimited Access" button in your TradeMind AI app.
                 </p>
               </div>
               
               <div class="footer">
-                <p>CryptoMind AI - AI-Powered Crypto Predictions</p>
+                <p>TradeMind AI - AI-Powered Crypto Predictions</p>
               </div>
             </div>
           </body>

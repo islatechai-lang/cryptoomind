@@ -410,7 +410,7 @@ export default function Chat() {
         <div className="space-y-3 md:space-y-6">
           {!isConnected && (
             <div className="text-center text-muted-foreground text-sm">
-              Connecting to CryptoMind AI...
+              Connecting to TradeMind AI...
             </div>
           )}
 

@@ -3,7 +3,7 @@ import { ChatMessage } from "../ChatMessage";
 const botMessage = {
   id: "1",
   sender: "bot" as const,
-  content: "Hey there! I'm CryptoMind AI — I analyse crypto markets in real time. Pick a pair and I'll show you my prediction.",
+  content: "Hey there! I'm TradeMind AI — I analyse crypto and forex markets in real time. Pick a pair and I'll show you my prediction.",
   timestamp: new Date(),
 };
 

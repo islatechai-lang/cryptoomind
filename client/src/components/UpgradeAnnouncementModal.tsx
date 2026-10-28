@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Brain, Zap, TrendingUp, Rocket, Sparkles } from "lucide-react";
 
-const STORAGE_KEY = "cryptomind_upgrade_v3.1_seen";
+const STORAGE_KEY = "trademind_upgrade_v3.1_seen";
 
 export default function UpgradeAnnouncementModal() {
     const [open, setOpen] = useState(false);
@@ -75,7 +75,7 @@ export default function UpgradeAnnouncementModal() {
 
                     <DialogHeader className="relative space-y-1.5 mb-4">
                         <DialogTitle className="text-center text-xl font-bold tracking-tight text-foreground">
-                            CryptoMind AI Just Got Smarter
+                            TradeMind AI Just Got Smarter
                         </DialogTitle>
                         <DialogDescription className="text-center text-[13px] leading-relaxed text-muted-foreground max-w-[340px] mx-auto">
                             We've upgraded to{" "}

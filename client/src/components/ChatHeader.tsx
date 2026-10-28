@@ -145,7 +145,7 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
           </Avatar>
           <div className="flex flex-col min-w-0 flex-1">
             <h2 className="text-xs md:text-base font-semibold truncate" data-testid="text-username">
-              {user?.name || "CryptoMind AI"}
+              {user?.name || "TradeMind AI"}
             </h2>
             {user?.username && (
               <p className="text-xs text-muted-foreground truncate hidden sm:block" data-testid="text-handle">

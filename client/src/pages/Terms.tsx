@@ -21,14 +21,14 @@ export default function Terms() {
                 <section className="space-y-4">
                     <h2 className="text-2xl font-semibold">1. Acceptance of Terms</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                        By accessing and using CryptoMind AI, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you must not use our services.
+                        By accessing and using TradeMind AI, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you must not use our services.
                     </p>
                 </section>
 
                 <section className="space-y-4">
                     <h2 className="text-2xl font-semibold">2. Description of Service</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                        CryptoMind AI provides an AI-driven market analysis tool for informational purposes. Our service includes technical indicator analysis, sentiment evaluation, and AI-generated trading hypotheses.
+                        TradeMind AI provides an AI-driven market analysis tool for informational purposes. Our service includes technical indicator analysis, sentiment evaluation, and AI-generated trading hypotheses.
                     </p>
                 </section>
 
@@ -42,21 +42,21 @@ export default function Terms() {
                 <section className="space-y-4 border-l-4 border-primary/50 pl-6 py-2 bg-primary/5 rounded-r-lg">
                     <h2 className="text-2xl font-semibold">4. User Responsibility</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                        You are solely responsible for your trading decisions. CryptoMind AI is an analytical tool, not a financial advisor. Any trades made based on information from our platform are done at your own risk.
+                        You are solely responsible for your trading decisions. TradeMind AI is an analytical tool, not a financial advisor. Any trades made based on information from our platform are done at your own risk.
                     </p>
                 </section>
 
                 <section className="space-y-4">
                     <h2 className="text-2xl font-semibold">5. Limitation of Liability</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                        In no event shall CryptoMind AI, its developers, or its affiliates be liable for any financial losses, data loss, or damages arising out of the use or inability to use the service.
+                        In no event shall TradeMind AI, its developers, or its affiliates be liable for any financial losses, data loss, or damages arising out of the use or inability to use the service.
                     </p>
                 </section>
 
                 <Separator className="my-8" />
 
                 <p className="text-sm text-muted-foreground text-center">
-                    &copy; 2026 CryptoMind AI. All rights reserved.
+                    &copy; 2026 TradeMind AI. All rights reserved.
                 </p>
             </div>
         </div>
