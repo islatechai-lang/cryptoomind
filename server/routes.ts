@@ -353,11 +353,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let planId = req.body.planId;
       if (!planId) {
         if (req.body.planType === "starter") {
-          planId = "plan_ZLLdnJssCPIpY";
+          planId = "plan_QYjPZMhJutfg2";
         } else if (req.body.planType === "pro") {
-          planId = "plan_mndBT74OUdiNB";
+          planId = "plan_HJ5hwY6BkSqoY";
         } else {
-          planId = process.env.WHOP_PLAN_ID || "plan_mndBT74OUdiNB";
+          planId = process.env.WHOP_PLAN_ID || "plan_HJ5hwY6BkSqoY";
         }
       }
 
@@ -420,7 +420,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         metadata: {
           user_id: user.userId,
           plan_id: planId,
-          plan_type: req.body.planType || (planId === "plan_ZLLdnJssCPIpY" ? "starter" : "pro"),
+          plan_type: req.body.planType || ((planId === "plan_QYjPZMhJutfg2" || planId === "plan_ZLLdnJssCPIpY") ? "starter" : "pro"),
           subscription_type: req.body.planType === "starter" ? "starter_plan" : "pro_plan",
           referring_admin_user_id: referringAdminUserId || "",
           referring_company_id: referringCompanyId || "",
@@ -587,9 +587,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // ================================================================
       // STEP 5: Grant access to customer (Starter: 20 credits, Pro: Pro access)
       // ================================================================
-      const isStarter = payment.plan_id === "plan_ZLLdnJssCPIpY" || 
-                        payment.metadata?.plan_type === "starter" || 
-                        payment.metadata?.plan_id === "plan_ZLLdnJssCPIpY";
+      const isStarter = payment.plan_id === "plan_QYjPZMhJutfg2" || payment.plan_id === "plan_ZLLdnJssCPIpY" || payment.metadata?.plan_type === "starter" || payment.metadata?.plan_id === "plan_QYjPZMhJutfg2" || payment.metadata?.plan_id === "plan_ZLLdnJssCPIpY";
       try {
         if (isStarter) {
           await storage.incrementUserCredits(customerUserId, 20);

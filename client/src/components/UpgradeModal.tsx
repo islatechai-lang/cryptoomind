@@ -21,8 +21,8 @@ interface UpgradeModalProps {
   currentPlan?: "free" | "starter" | "pro";
 }
 
-export const STARTER_PLAN_ID = "plan_ZLLdnJssCPIpY";
-export const PRO_PLAN_ID = "plan_mndBT74OUdiNB";
+export const STARTER_PLAN_ID = "plan_QYjPZMhJutfg2";
+export const PRO_PLAN_ID = "plan_HJ5hwY6BkSqoY";
 
 export function UpgradeModal({
   open,

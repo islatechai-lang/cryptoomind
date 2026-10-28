@@ -10,7 +10,7 @@ export interface PurchaseOptions {
 export async function purchaseCredits(options?: PurchaseOptions): Promise<boolean> {
   const planId =
     options?.planId ||
-    (options?.planType === "starter" ? "plan_ZLLdnJssCPIpY" : "plan_mndBT74OUdiNB");
+    (options?.planType === "starter" ? "plan_QYjPZMhJutfg2" : "plan_HJ5hwY6BkSqoY");
 
   const isIframe = typeof window !== "undefined" && window.self !== window.top;
 
